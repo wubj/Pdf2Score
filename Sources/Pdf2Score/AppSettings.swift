@@ -94,6 +94,13 @@ final class AppSettings {
         revealInFinderWhenDone = defaults.bool(forKey: Keys.revealInFinder)
     }
 
+    /// Which of the worker's message tables to use. The app itself ships only
+    /// English and Traditional Chinese, and a Simplified Chinese system is
+    /// deliberately served the Traditional strings, so this collapses to two.
+    static var workerLanguage: String {
+        Bundle.main.preferredLocalizations.first?.hasPrefix("zh") == true ? "zh-Hant" : "en"
+    }
+
     /// Effective output directory, or nil to mean "next to each source PDF".
     var effectiveOutputDirectory: URL? {
         outputLocation == .customFolder ? customOutputFolder : nil
@@ -102,6 +109,7 @@ final class AppSettings {
     func workerOptions(engine: Engine? = nil) -> [String: Any] {
         [
             "engine": (engine ?? self.engine).rawValue,
+            "language": Self.workerLanguage,
             "audiverisPath": PythonEnvironment.audiverisLauncher?.path ?? NSNull(),
             "outputDir": effectiveOutputDirectory?.path ?? NSNull(),
             "dpi": dpi,

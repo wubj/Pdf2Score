@@ -27,7 +27,7 @@ help:
 	@echo "make dmg-all             # both disk images"
 	@echo "make test [ARCH=...]     # end-to-end checks against samples/"
 	@echo "make audiveris           # fetch the second recognition engine"
-	@echo "make guide               # rebuild docs/index.html from docs/src/"
+	@echo "make guide               # rebuild both user guides from docs/src/"
 
 ## Assemble a real, double-clickable .app around the SwiftPM executable.
 ## Includes the self-contained Python runtime when it has been built.
@@ -53,6 +53,12 @@ app: icon
 	else \
 		echo "no $(ARCH) Audiveris (run 'make audiveris ARCH=$(ARCH)' to include it)"; \
 	fi
+	@# macOS resolves zh-Hans to its own .lproj and will not fall back to
+	@# zh-Hant, so a Simplified Chinese system would land on English. Ship a
+	@# copy of the Traditional strings under zh-Hans to serve both.
+	cp -R Resources/en.lproj "$(BUNDLE)/Contents/Resources/en.lproj"
+	cp -R Resources/zh-Hant.lproj "$(BUNDLE)/Contents/Resources/zh-Hant.lproj"
+	cp -R Resources/zh-Hant.lproj "$(BUNDLE)/Contents/Resources/zh-Hans.lproj"
 	@if [ -f Resources/AppIcon.icns ]; then \
 		cp Resources/AppIcon.icns "$(BUNDLE)/Contents/Resources/AppIcon.icns"; \
 	fi
@@ -70,11 +76,11 @@ app: icon
 	codesign --force --sign - "$(BUNDLE)"
 	@echo "built $(BUNDLE) ($$(du -sh "$(BUNDLE)" | cut -f1))"
 
-## Rebuild the user guide (docs/src/guide.html -> docs/index.html).
+## Rebuild both user guides (docs/src/ -> docs/index.html and docs/en/).
 guide:
 	python3 Tools/build_guide.py
 
-docs/index.html: docs/src/guide.html Tools/build_guide.py docs/icon/AppIcon-256.png
+docs/index.html docs/en/index.html: $(wildcard docs/src/*) Tools/build_guide.py docs/icon/AppIcon-256.png
 	python3 Tools/build_guide.py
 
 ## Extract the bundled Audiveris engine (ships its own JRE).
@@ -104,6 +110,7 @@ dmg: $(RUNTIME) $(AUDIVERIS) docs/index.html app
 	ln -s /Applications "build/dmg-$(ARCH)/應用程式"
 	cp Resources/dmg-readme.txt "build/dmg-$(ARCH)/請先讀我.txt"
 	cp docs/index.html "build/dmg-$(ARCH)/使用指南.html"
+	cp docs/en/index.html "build/dmg-$(ARCH)/Guide.html"
 	@# LZMA over zlib: ~11% smaller for a payload this size, at about 90 seconds
 	@# of build time. Supported since macOS 10.15, well below our floor of 14.
 	hdiutil create -volname "$(APP) $(LABEL)" -srcfolder build/dmg-$(ARCH) -ov \

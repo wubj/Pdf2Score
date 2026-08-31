@@ -13,7 +13,7 @@ struct Pdf2ScoreApp: App {
         }
         .commands {
             CommandGroup(replacing: .newItem) {
-                Button("加入 PDF…") { model.chooseFiles() }
+                Button("Add PDFs…") { model.chooseFiles() }
                     .keyboardShortcut("o")
             }
         }
@@ -32,13 +32,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // thinks its Python lives — the first thing to look at when conversion
         // fails for environment reasons.
         guard CommandLine.arguments.contains("--check") else { return }
-        let scripts = PythonEnvironment.scriptDirectory?.path ?? "找不到"
-        print("worker.py 目錄 : \(scripts)")
-        print("內建執行環境   : \(PythonEnvironment.bundledPython?.path ?? "無（使用開發用 venv）")")
-        print("實際使用的 Python: \(PythonEnvironment.pythonExecutable.path)")
-        print("已完成安裝     : \(PythonEnvironment.isInstalled)")
+        let scripts = PythonEnvironment.scriptDirectory?.path ?? "not found"
+        print("worker.py directory : \(scripts)")
+        print("bundled runtime    : \(PythonEnvironment.bundledPython?.path ?? "none (using the development venv)")")
+        print("python executable  : \(PythonEnvironment.pythonExecutable.path)")
+        print("installed          : \(PythonEnvironment.isInstalled)")
         if PythonEnvironment.bundledPython == nil {
-            print("系統可用 Python: \(PythonEnvironment.findInterpreter() ?? "無")")
+            print("system python      : \(PythonEnvironment.findInterpreter() ?? "none")")
         }
         exit(0)
     }

@@ -6,7 +6,7 @@
 get a `.mxl` for each one. Two recognition engines, switchable per batch. Runs
 entirely on your Mac — no account, no network, nothing uploaded.
 
-繁體中文說明在下半部 · [線上使用指南](https://wubj.github.io/Pdf2Score/)
+繁體中文說明在下半部 · [User guide](https://wubj.github.io/Pdf2Score/en/) · [使用指南](https://wubj.github.io/Pdf2Score/)
 
 ---
 
@@ -14,15 +14,15 @@ entirely on your Mac — no account, no network, nothing uploaded.
 
 | Your Mac | File |
 |---|---|
-| Apple Silicon (M1 and later) | [Pdf2Score-AppleSilicon.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-AppleSilicon.dmg) — 274 MB |
-| Intel | [Pdf2Score-Intel.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-Intel.dmg) — 314 MB |
+| Apple Silicon (M1 and later) | [Pdf2Score-AppleSilicon.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-AppleSilicon.dmg) — 279 MB |
+| Intel | [Pdf2Score-Intel.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-Intel.dmg) — 313 MB |
 
 Requires **macOS 14 or later**. Apple menu → About This Mac tells you which
 chip you have; the wrong build will not open.
 
 The app is ad-hoc signed and **not notarised**, so the first launch needs
 right-click → Open, or System Settings → Privacy & Security → Open Anyway.
-The [illustrated guide](https://wubj.github.io/Pdf2Score/) walks through it.
+The [illustrated guide](https://wubj.github.io/Pdf2Score/en/) walks through it.
 
 ## What it does
 
@@ -105,8 +105,8 @@ component and its license.
 
 | 你的 Mac | 檔案 |
 |---|---|
-| Apple Silicon（M1 以後） | [Pdf2Score-AppleSilicon.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-AppleSilicon.dmg) — 274 MB |
-| Intel | [Pdf2Score-Intel.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-Intel.dmg) — 314 MB |
+| Apple Silicon（M1 以後） | [Pdf2Score-AppleSilicon.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-AppleSilicon.dmg) — 279 MB |
+| Intel | [Pdf2Score-Intel.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-Intel.dmg) — 313 MB |
 
 需要 **macOS 14 以上**。蘋果選單 →「關於這台 Mac」可以看到晶片是哪一種，
 **拿錯的那份打不開**。

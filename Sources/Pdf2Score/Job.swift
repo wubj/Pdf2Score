@@ -44,18 +44,18 @@ final class Job: Identifiable {
     var statusText: String {
         switch state {
         case .queued:
-            return "等待中"
+            return String(localized: "Waiting")
         case .preparing:
-            return "啟動辨識引擎…（安裝後第一次可能要好幾分鐘）"
+            return String(localized: "Starting the recognition engine… (the first run after installing can take several minutes)")
         case .running:
-            if pageCount == 0 { return "讀取 PDF…" }
-            return "辨識第 \(max(currentPage, 1)) / \(pageCount) 頁"
+            if pageCount == 0 { return String(localized: "Reading PDF…") }
+            return String(format: String(localized: "Page %d of %d"), max(currentPage, 1), pageCount)
         case .done:
-            return message == nil ? "完成" : "完成（有警告）"
+            return String(localized: message == nil ? "Done" : "Done, with warnings")
         case .failed:
-            return "失敗"
+            return String(localized: "Failed")
         case .cancelled:
-            return "已取消"
+            return String(localized: "Cancelled")
         }
     }
 

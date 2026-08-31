@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="How to install and use Pdf2Score: turn PDF sheet music into files MuseScore can open.">
+<title>Pdf2Score User Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+  :root {
+    --paper:    #FAF9F7;
+    --panel:    #F1EEE9;
+    --ink:      #1A1B20;
+    --muted:    #6E6762;
+    --rule:     #C7C3BD;
+    --hairline: #E3DFD8;
+    --accent:   #A8232F;
+    --accent-wash: #F6E9E8;
+    --shadow:   rgba(26, 27, 32, .09);
+
+    --display: "Fraunces", "Noto Serif TC", Georgia, serif;
+    --body: "Source Sans 3", "Noto Sans TC", -apple-system, system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:    #15161A;
+      --panel:    #1E2026;
+      --ink:      #E9E6E1;
+      --muted:    #9B938C;
+      --rule:     #43454D;
+      --hairline: #2A2C33;
+      --accent:   #EC7C86;
+      --accent-wash: #2C1E20;
+      --shadow:   rgba(0, 0, 0, .45);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:    #15161A;
+    --panel:    #1E2026;
+    --ink:      #E9E6E1;
+    --muted:    #9B938C;
+    --rule:     #43454D;
+    --hairline: #2A2C33;
+    --accent:   #EC7C86;
+    --accent-wash: #2C1E20;
+    --shadow:   rgba(0, 0, 0, .45);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.7;
+    margin: 0;
+    padding: 0 24px 96px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    padding: 72px 0 44px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .badge img {
+    width: 76px;
+    height: 76px;
+    border-radius: 17px;
+    box-shadow: 0 6px 20px var(--shadow);
+  }
+
+  .badge h1 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 2.4rem;
+    line-height: 1.1;
+    letter-spacing: -.01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .badge .kicker {
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 6px;
+  }
+
+  .badge .kicker a {
+    color: var(--muted);
+    text-decoration-color: var(--rule);
+  }
+
+  .badge .kicker a:hover {
+    color: var(--accent);
+  }
+
+  .standfirst {
+    font-size: 1.16rem;
+    color: var(--muted);
+    margin: 0;
+    max-width: 60ch;
+  }
+
+  /* the five-line stave that separates the masthead from the body */
+  .stave {
+    display: block;
+    width: 100%;
+    height: 30px;
+    margin: 8px 0 0;
+  }
+
+  /* ---------- structure ---------- */
+
+  section {
+    padding-top: 52px;
+  }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.62rem;
+    line-height: 1.25;
+    margin: 0 0 6px;
+    text-wrap: balance;
+  }
+
+  .section-note {
+    color: var(--muted);
+    margin: 0 0 28px;
+  }
+
+  h3 {
+    font-family: var(--body);
+    font-weight: 600;
+    font-size: 1.02rem;
+    margin: 0 0 4px;
+  }
+
+  p { margin: 0 0 16px; }
+  p:last-child { margin-bottom: 0; }
+
+  a {
+    color: var(--accent);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  a:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  code {
+    font-family: var(--mono);
+    font-size: .86em;
+    background: var(--panel);
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+
+  strong { font-weight: 600; }
+
+  /* ---------- requirements ---------- */
+
+  .specs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 0;
+  }
+
+  .spec {
+    background: var(--panel);
+    border: 1px solid var(--hairline);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+
+  .spec dt {
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+
+  .spec dd {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.02rem;
+  }
+
+  .spec dd span {
+    display: block;
+    font-weight: 400;
+    font-size: .87rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-top: 2px;
+  }
+
+  /* ---------- downloads ---------- */
+
+  .downloads {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+
+  .download {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 18px 20px;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    background: var(--panel);
+    text-decoration: none;
+    color: var(--ink);
+    transition: border-color .15s ease, background .15s ease;
+  }
+
+  .download:hover,
+  .download:focus-visible {
+    border-color: var(--accent);
+    background: var(--accent-wash);
+  }
+
+  .download .machine {
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .download .file {
+    font-weight: 600;
+    font-size: 1.02rem;
+    color: var(--accent);
+    word-break: break-all;
+  }
+
+  .download .size {
+    font-size: .85rem;
+    color: var(--muted);
+  }
+
+  /* ---------- numbered install steps (bar numbers) ---------- */
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    gap: 22px;
+    padding: 26px 0;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .step:first-child { border-top: none; padding-top: 6px; }
+
+  .bar-number {
+    font-family: var(--mono);
+    font-size: .84rem;
+    font-weight: 500;
+    color: var(--accent);
+    border-left: 2px solid var(--accent);
+    padding-left: 9px;
+    height: fit-content;
+    line-height: 1.5;
+  }
+
+  .step-body > * + * { margin-top: 14px; }
+
+  /* ---------- figures ---------- */
+
+  figure {
+    margin: 0;
+    border: 1px solid var(--hairline);
+    border-radius: 10px;
+    background: var(--panel);
+    overflow: hidden;
+  }
+
+  figure svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  figcaption {
+    font-size: .84rem;
+    color: var(--muted);
+    padding: 10px 16px 12px;
+    border-top: 1px solid var(--hairline);
+    background: var(--paper);
+  }
+
+  /* ---------- callouts ---------- */
+
+  .note {
+    border-left: 3px solid var(--rule);
+    padding: 2px 0 2px 18px;
+    color: var(--muted);
+    font-size: .95rem;
+  }
+
+  .note strong { color: var(--ink); }
+
+  .alert {
+    border-left-color: var(--accent);
+    background: var(--accent-wash);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 18px;
+    color: var(--ink);
+  }
+
+  /* ---------- usage cards ---------- */
+
+  .cards {
+    display: grid;
+    gap: 18px;
+  }
+
+  .card {
+    border: 1px solid var(--hairline);
+    border-radius: 10px;
+    padding: 20px 22px;
+    background: var(--panel);
+  }
+
+  .card p {
+    color: var(--muted);
+    font-size: .95rem;
+    margin: 6px 0 0;
+  }
+
+  .card p strong { color: var(--ink); }
+
+  /* ---------- faq ---------- */
+
+  details {
+    border-top: 1px solid var(--hairline);
+    padding: 4px 0;
+  }
+
+  details:last-of-type { border-bottom: 1px solid var(--hairline); }
+
+  summary {
+    cursor: pointer;
+    padding: 14px 0;
+    font-weight: 600;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  summary::-webkit-details-marker { display: none; }
+
+  summary::after {
+    content: "+";
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 1.1rem;
+    flex: none;
+  }
+
+  details[open] summary::after { content: "\2212"; }
+
+  details .answer {
+    padding: 0 0 18px;
+    color: var(--muted);
+    font-size: .96rem;
+  }
+
+  details .answer p { margin-bottom: 12px; }
+
+  /* ---------- colophon ---------- */
+
+  footer {
+    margin-top: 64px;
+    padding-top: 22px;
+    border-top: 1px solid var(--hairline);
+    font-size: .84rem;
+    color: var(--muted);
+  }
+
+  footer p { margin-bottom: 8px; }
+
+  @media (max-width: 560px) {
+    body { font-size: 16px; padding: 0 18px 72px; }
+    .masthead { padding-top: 48px; }
+    .badge { gap: 14px; }
+    .badge img { width: 60px; height: 60px; }
+    .badge h1 { font-size: 1.9rem; }
+    .step { grid-template-columns: 38px 1fr; gap: 14px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="badge">
+      <img src="data:image/png;base64,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" alt="The Pdf2Score app icon: a quarter note on a white page over blue">
+      <div>
+        <p class="kicker">Install &amp; use · <a href="https://wubj.github.io/Pdf2Score/">繁體中文</a></p>
+        <h1>Pdf2Score</h1>
+      </div>
+    </div>
+    <p class="standfirst">
+      Turn PDF sheet music into files MuseScore can open. Drag a PDF in,
+      every page is recognised, and multi-page scores are stitched into one piece.
+    </p>
+    <svg class="stave" viewBox="0 0 700 30" preserveAspectRatio="none" aria-hidden="true">
+      <g stroke-width="1" style="stroke: var(--rule)">
+        <line x1="0" y1="3"  x2="700" y2="3"></line>
+        <line x1="0" y1="9"  x2="700" y2="9"></line>
+        <line x1="0" y1="15" x2="700" y2="15"></line>
+        <line x1="0" y1="21" x2="700" y2="21"></line>
+        <line x1="0" y1="27" x2="700" y2="27"></line>
+      </g>
+      <rect x="0" y="3" width="2.5" height="24" style="fill: var(--accent)"></rect>
+    </svg>
+  </header>
+
+  <section>
+    <h2>Before you start</h2>
+    <p class="section-note">Four things to check. If they all hold, carry on.</p>
+    <dl class="specs">
+      <div class="spec">
+        <dt>Mac model</dt>
+        <dd>Either kind
+          <span>Apple Silicon and Intel have separate installers, and
+                <strong>the wrong one will not open</strong>.
+                Apple menu → About This Mac, look at the Chip row.</span>
+        </dd>
+      </div>
+      <div class="spec">
+        <dt>System version</dt>
+        <dd>macOS 14 or later
+          <span>Same window. Sonoma, Sequoia and Tahoe all work.</span>
+        </dd>
+      </div>
+      <div class="spec">
+        <dt>Also needed</dt>
+        <dd>MuseScore
+          <span>You will open and proofread the results in it.
+                <a href="https://musescore.org/en/download">Free download</a>.</span>
+        </dd>
+      </div>
+      <div class="spec">
+        <dt>Internet</dt>
+        <dd>Not needed
+          <span>Recognition runs on your own machine; no score is uploaded anywhere.</span>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Download</h2>
+    <p class="section-note">
+      The two installers are for different machines, and
+      <strong>the wrong one will not open</strong>.
+      Apple menu → About This Mac, look at the “Chip” or “Processor” row.
+    </p>
+    <div class="downloads">
+      <a class="download" href="https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-AppleSilicon.dmg" target="_blank" rel="noopener">
+        <span class="machine">Apple M1 / M2 / M3⋯</span>
+        <span class="file">Pdf2Score-AppleSilicon.dmg</span>
+        <span class="size">279 MB</span>
+      </a>
+      <a class="download" href="https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-Intel.dmg" target="_blank" rel="noopener">
+        <span class="machine">Intel</span>
+        <span class="file">Pdf2Score-Intel.dmg</span>
+        <span class="size">313 MB</span>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Install</h2>
+    <p class="section-note">
+      The warning in step 3 is expected, and does not mean anything is wrong with the
+      file — this app has no paid Apple certificate, so macOS blocks it once by
+      default. You only have to do this the first time.
+    </p>
+
+    <ol class="steps">
+
+      <li class="step">
+        <div class="bar-number">1</div>
+        <div class="step-body">
+          <h3>Open the .dmg you downloaded</h3>
+          <p>Double-click it in your Downloads folder. A window opens: drag
+             <strong>Pdf2Score</strong> onto the <strong>Applications</strong> folder
+             beside it.</p>
+          <figure>
+            <svg viewBox="0 0 660 260" role="img" aria-label="Illustration: dragging the Pdf2Score icon onto the Applications folder inside the disk image window">
+              <rect x="30" y="20" width="600" height="220" rx="12" style="fill: var(--paper); stroke: var(--rule)"></rect>
+              <rect x="30" y="20" width="600" height="34" rx="12" style="fill: var(--panel); stroke: var(--rule)"></rect>
+              <path d="M30 54 h600" style="stroke: var(--rule)"></path>
+              <g style="fill: var(--rule)">
+                <circle cx="52" cy="37" r="5"></circle>
+                <circle cx="70" cy="37" r="5"></circle>
+                <circle cx="88" cy="37" r="5"></circle>
+              </g>
+              <text x="330" y="42" text-anchor="middle" font-size="14" style="font-family: var(--body); fill: var(--muted)">Pdf2Score</text>
+
+              <rect x="140" y="96" width="76" height="76" rx="17" opacity=".12" style="fill: var(--accent)"></rect>
+              <rect x="140" y="96" width="76" height="76" rx="17" fill="none" stroke-width="1.5" style="stroke: var(--accent)"></rect>
+              <ellipse cx="172" cy="146" rx="15" ry="11" style="fill: var(--accent)"></ellipse>
+              <path d="M186 146 V112" stroke-width="4" stroke-linecap="round" style="stroke: var(--accent)"></path>
+              <text x="178" y="198" text-anchor="middle" font-size="14" style="font-family: var(--body); fill: var(--ink)">Pdf2Score</text>
+
+              <path d="M258 134 h124" stroke-width="2.5" stroke-dasharray="7 6" stroke-linecap="round" style="stroke: var(--accent)"></path>
+              <path d="M382 134 l-13 -8 v16 z" style="fill: var(--accent)"></path>
+
+              <path d="M420 104 h30 l9 12 h37 a8 8 0 0 1 8 8 v40 a8 8 0 0 1 -8 8 h-76 a8 8 0 0 1 -8 -8 v-52 a8 8 0 0 1 8 -8 z" stroke-width="1.5" style="fill: var(--panel); stroke: var(--rule)"></path>
+              <text x="466" y="198" text-anchor="middle" font-size="14" style="font-family: var(--body); fill: var(--ink)">Applications</text>
+            </svg>
+            <figcaption>Drag to install. Once you let go the copy is done and you can close the window.</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li class="step">
+        <div class="bar-number">2</div>
+        <div class="step-body">
+          <h3>Open it from Applications with a right-click</h3>
+          <p><strong>Do not double-click</strong> for this first launch.
+             <strong>Right-click</strong> Pdf2Score (or Control-click it) and choose
+             <strong>Open</strong> from the menu.</p>
+          <figure>
+            <svg viewBox="0 0 660 250" role="img" aria-label="Illustration: right-clicking the app icon, with Open highlighted in the shortcut menu">
+              <rect x="60" y="34" width="76" height="76" rx="17" opacity=".12" style="fill: var(--accent)"></rect>
+              <rect x="60" y="34" width="76" height="76" rx="17" fill="none" stroke-width="1.5" style="stroke: var(--accent)"></rect>
+              <ellipse cx="92" cy="84" rx="15" ry="11" style="fill: var(--accent)"></ellipse>
+              <path d="M106 84 V50" stroke-width="4" stroke-linecap="round" style="stroke: var(--accent)"></path>
+              <text x="98" y="136" text-anchor="middle" font-size="14" style="font-family: var(--body); fill: var(--ink)">Pdf2Score</text>
+
+              <path d="M118 92 l0 26 l6 -6 l5 11 l5 -2 l-5 -11 l8 0 z" stroke-width="1.5" style="fill: var(--ink); stroke: var(--paper)"></path>
+
+              <rect x="150" y="96" width="210" height="132" rx="9" style="fill: var(--paper); stroke: var(--rule)"></rect>
+              <rect x="156" y="104" width="198" height="26" rx="6" style="fill: var(--accent)"></rect>
+              <text x="170" y="122" font-size="14" font-weight="600" style="font-family: var(--body); fill: var(--paper)">Open</text>
+              <text x="170" y="152" font-size="14" style="font-family: var(--body); fill: var(--muted)">Open With</text>
+              <path d="M156 166 h198" style="stroke: var(--hairline)"></path>
+              <text x="170" y="188" font-size="14" style="font-family: var(--body); fill: var(--muted)">Get Info</text>
+              <text x="170" y="214" font-size="14" style="font-family: var(--body); fill: var(--muted)">Move to Trash</text>
+
+              <path d="M392 118 h-24" stroke-width="2" stroke-linecap="round" style="stroke: var(--accent)"></path>
+              <path d="M368 118 l13 -7 v14 z" style="fill: var(--accent)"></path>
+              <text x="402" y="115" font-size="14" font-weight="600" style="font-family: var(--body); fill: var(--accent)">This one</text>
+              <text x="402" y="136" font-size="13" style="font-family: var(--body); fill: var(--muted)">double-clicking is blocked</text>
+            </svg>
+            <figcaption>Only the first launch needs this. After that, double-clicking works normally.</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li class="step">
+        <div class="bar-number">3</div>
+        <div class="step-body">
+          <h3>Click Open in the warning dialog</h3>
+          <p>You will see something like “Apple could not verify … it may contain
+             malware”. Click <strong>Open</strong>.</p>
+          <div class="note alert">
+            <p><strong>If the dialog only offers “Move to Trash” and “Cancel”, with no Open:</strong></p>
+            <p>Click Cancel, then open <strong>System Settings → Privacy &amp; Security</strong>
+               and scroll to the bottom. A line says Pdf2Score was blocked — click
+               <strong>Open Anyway</strong> next to it and enter your password.</p>
+          </div>
+          <figure>
+            <svg viewBox="0 0 660 210" role="img" aria-label="Illustration: the Privacy and Security page in System Settings with an Open Anyway button">
+              <rect x="30" y="18" width="600" height="174" rx="12" style="fill: var(--paper); stroke: var(--rule)"></rect>
+              <rect x="30" y="18" width="196" height="174" rx="12" style="fill: var(--panel)"></rect>
+              <path d="M226 18 v174" style="stroke: var(--rule)"></path>
+              <text x="54" y="50" font-size="14" style="font-family: var(--body); fill: var(--muted)">System Settings</text>
+              <rect x="46" y="66" width="170" height="26" rx="6" opacity=".14" style="fill: var(--accent)"></rect>
+              <text x="58" y="84" font-size="13" font-weight="600" style="font-family: var(--body); fill: var(--accent)">Privacy &amp; Security</text>
+              <text x="60" y="116" font-size="14" style="font-family: var(--body); fill: var(--muted)">Appearance</text>
+              <text x="60" y="144" font-size="14" style="font-family: var(--body); fill: var(--muted)">Sound</text>
+
+              <text x="252" y="52" font-size="14" font-weight="600" style="font-family: var(--body); fill: var(--ink)">Security</text>
+              <path d="M252 66 h354" style="stroke: var(--hairline)"></path>
+              <text x="252" y="94" font-size="13.5" style="font-family: var(--body); fill: var(--muted)">Allow applications from</text>
+              <rect x="252" y="118" width="354" height="52" rx="8" stroke-width="1.5" style="fill: var(--accent-wash); stroke: var(--accent)"></rect>
+              <text x="266" y="142" font-size="13" style="font-family: var(--body); fill: var(--ink)">“Pdf2Score” was blocked because it is</text>
+              <text x="266" y="160" font-size="13" style="font-family: var(--body); fill: var(--ink)">not from an identified developer.</text>
+              <rect x="492" y="132" width="100" height="27" rx="7" style="fill: var(--accent)"></rect>
+              <text x="542" y="150" text-anchor="middle" font-size="12.5" font-weight="600" style="font-family: var(--body); fill: var(--paper)">Open Anyway</text>
+            </svg>
+            <figcaption>That line only appears after you have tried to open the app, at the bottom of the page.</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li class="step">
+        <div class="bar-number">4</div>
+        <div class="step-body">
+          <h3>That's it</h3>
+          <p>The app opens to an empty window, waiting for PDFs. Nothing to configure,
+             no account, no download to wait for — everything it needs is already inside.</p>
+        </div>
+      </li>
+
+    </ol>
+  </section>
+
+  <section>
+    <h2>Converting a score</h2>
+    <p class="section-note">Three moves: drop it in, press Convert, open the result in MuseScore.</p>
+
+    <figure>
+      <svg viewBox="0 0 660 322" role="img" aria-label="Illustration: the Pdf2Score window, with add, engine switch and convert in the toolbar and a file queue below">
+        <rect x="20" y="16" width="620" height="290" rx="12" style="fill: var(--paper); stroke: var(--rule)"></rect>
+        <rect x="20" y="16" width="620" height="48" rx="12" style="fill: var(--panel)"></rect>
+        <path d="M20 64 h620" style="stroke: var(--rule)"></path>
+        <g style="fill: var(--rule)">
+          <circle cx="42" cy="40" r="5.5"></circle>
+          <circle cx="61" cy="40" r="5.5"></circle>
+          <circle cx="80" cy="40" r="5.5"></circle>
+        </g>
+        <text x="104" y="45" font-size="14" font-weight="600" style="font-family: var(--body); fill: var(--ink)">Pdf2Score</text>
+
+        <rect x="322" y="26" width="242" height="29" rx="9" style="fill: var(--paper); stroke: var(--rule)"></rect>
+        <path d="M342 40.5 h13 M348.5 34 v13" stroke-width="1.8" stroke-linecap="round" style="stroke: var(--ink)"></path>
+        <rect x="368" y="30" width="140" height="21" rx="6" style="fill: var(--panel); stroke: var(--rule)"></rect>
+        <rect x="368" y="30" width="66" height="21" rx="6" style="fill: var(--accent)"></rect>
+        <text x="401" y="45" text-anchor="middle" font-size="12" font-weight="600" style="font-family: var(--body); fill: var(--paper)">homr</text>
+        <text x="471" y="45" text-anchor="middle" font-size="12" style="font-family: var(--body); fill: var(--muted)">Audiveris</text>
+        <path d="M530 33.5 l12 7 l-12 7 z" style="fill: var(--ink)"></path>
+
+        <rect x="576" y="26" width="48" height="29" rx="9" style="fill: var(--paper); stroke: var(--rule)"></rect>
+        <text x="595" y="46" text-anchor="middle" font-size="15" style="font-family: var(--body); fill: var(--muted)">···</text>
+        <path d="M609 38 l4 4 l4 -4" stroke-width="1.5" fill="none" stroke-linecap="round" style="stroke: var(--muted)"></path>
+
+        <circle cx="48" cy="96" r="8" opacity=".18" style="fill: var(--accent)"></circle>
+        <path d="M44 96 l3 3 l6 -7" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--accent)"></path>
+        <text x="70" y="93" font-size="14" style="font-family: var(--body); fill: var(--ink)">Moonlight Sonata.pdf</text>
+        <text x="70" y="110" font-size="12" style="font-family: var(--body); fill: var(--muted)">Done</text>
+        <text x="612" y="101" text-anchor="end" font-size="12" style="font-family: var(--body); fill: var(--muted)">homr</text>
+        <path d="M40 124 h572" style="stroke: var(--hairline)"></path>
+
+        <circle cx="48" cy="152" r="8" opacity=".18" style="fill: var(--accent)"></circle>
+        <path d="M43 152 q2.5 -6 5 0 t5 0" stroke-width="1.8" fill="none" stroke-linecap="round" style="stroke: var(--accent)"></path>
+        <text x="70" y="149" font-size="14" style="font-family: var(--body); fill: var(--ink)">Etude Op.10.pdf</text>
+        <text x="70" y="166" font-size="12" style="font-family: var(--body); fill: var(--muted)">Page 2 of 4</text>
+        <rect x="492" y="146" width="120" height="7" rx="3.5" style="fill: var(--hairline)"></rect>
+        <rect x="492" y="146" width="54" height="7" rx="3.5" style="fill: var(--accent)"></rect>
+        <path d="M40 180 h572" style="stroke: var(--hairline)"></path>
+
+        <circle cx="48" cy="208" r="8" fill="none" stroke-width="1.5" style="stroke: var(--rule)"></circle>
+        <path d="M48 204 v4 l3 2" stroke-width="1.5" fill="none" stroke-linecap="round" style="stroke: var(--rule)"></path>
+        <text x="70" y="205" font-size="14" style="font-family: var(--body); fill: var(--ink)">Minuet.pdf</text>
+        <text x="70" y="222" font-size="12" style="font-family: var(--body); fill: var(--muted)">Waiting</text>
+
+        <path d="M20 248 h620" style="stroke: var(--hairline)"></path>
+        <path d="M42 262 l5 5 l-5 5" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--muted)"></path>
+        <text x="58" y="271" font-size="12" style="font-family: var(--body); fill: var(--muted)">Processing log (Etude Op.10.pdf)</text>
+
+        <path d="M20 282 h620" style="stroke: var(--rule)"></path>
+        <text x="40" y="299" font-size="12" style="font-family: var(--body); fill: var(--muted)">3 files · 1 done</text>
+        <text x="620" y="299" text-anchor="end" font-size="12" style="font-family: var(--body); fill: var(--muted)">Saving next to each PDF</text>
+      </svg>
+      <figcaption>The main window. The engine switch sits in the middle of the toolbar; each row is one PDF, progress counts pages, and a finished row shows which engine produced it.</figcaption>
+    </figure>
+
+    <div class="cards" style="margin-top: 26px;">
+      <div class="card">
+        <h3>Drag PDFs into the window</h3>
+        <p>As many at once as you like, or <strong>a whole folder</strong> — it finds
+           every PDF inside. The Add PDFs button in the toolbar does the same thing.</p>
+      </div>
+      <div class="card">
+        <h3>Press Convert</h3>
+        <p>About 5 seconds per page on Apple Silicon (around 15 with Audiveris);
+           Intel Macs are slower again. You can press Stop at any time.
+           One file failing does not affect the others — that row turns red and the
+           rest carry on.</p>
+      </div>
+      <div class="card">
+        <h3>Open the result in MuseScore</h3>
+        <p>Each PDF produces an <code>.mxl</code> of the same name
+           <strong>in the folder the PDF came from</strong>. Double-click it to open
+           it in MuseScore, or right-click the row and choose Show in Finder.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Two recognition engines</h2>
+    <p class="section-note">When a result comes out badly, switch engines before you touch anything else — it helps more than any setting.</p>
+    <div class="cards">
+      <div class="card">
+        <h3>homr (default)</h3>
+        <p>A neural model. Copes better with <strong>photographs, skewed scans and
+           soft printing</strong>. A little faster.</p>
+      </div>
+      <div class="card">
+        <h3>Audiveris</h3>
+        <p>Classical structural analysis. Very steady on <strong>clean, regularly
+           engraved</strong> scores, and it reads multi-page pieces as one book itself.
+           A little slower.</p>
+      </div>
+      <div class="card">
+        <h3>How to switch</h3>
+        <p>The engine switch is in the toolbar, <strong>right next to Convert</strong>.
+           Pick one before converting.</p>
+        <p>For a file that has already been converted, <strong>right-click its row →
+           Re-recognise with …</strong>. That runs the same PDF through the other
+           engine and writes a second file, so you can compare them.</p>
+      </div>
+    </div>
+    <p style="margin-top: 18px;">Neither is always better. On the same score the two may differ by a bar or two,
+       or by a lot — compare them and decide which one to proofread.</p>
+  </section>
+
+  <section>
+    <h2>Everything needs proofreading</h2>
+    <p>Optical music recognition is never perfect. That is the state of the technology,
+       not a fault in this app. Cleanly printed scores usually come out well;
+       <strong>skewed scans, repeated photocopies, handwriting and dense piano
+       writing</strong> produce noticeably more wrong notes and rhythms.</p>
+    <p>Think of it as having typed most of the notes for you. Check it against the
+       original in MuseScore and fix what is wrong — still far faster than entering
+       the whole thing by hand.</p>
+  </section>
+
+  <section>
+    <h2>Settings</h2>
+    <p class="section-note">The defaults are fine; these are the ones you might want to change. Open them from Pdf2Score → Settings in the menu bar.</p>
+    <div class="cards">
+      <div class="card">
+        <h3>Location</h3>
+        <p>By default results land next to the source PDF. To collect everything in
+           one place, switch to “A folder I choose”.</p>
+      </div>
+      <div class="card">
+        <h3>Use the Apple GPU</h3>
+        <p>Only meaningful on Apple Silicon; leave it off on Intel. The first run has
+           to compile the model, so it pays off across many files rather than one.</p>
+      </div>
+      <div class="card">
+        <h3>Rendering resolution</h3>
+        <p>300 dpi by default. If a <strong>scan looks soft</strong>, 400 dpi may read
+           it better, at the cost of speed; 200 dpi is faster when you are in a hurry.</p>
+      </div>
+      <div class="card">
+        <h3>Merge multi-page PDFs</h3>
+        <p>On by default: one PDF, one file. If a page's part layout does not line up
+           with the others, it writes the pages out separately and flags the row rather
+           than forcing together a score that would be wrong.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>If something goes wrong</h2>
+
+    <details>
+      <summary>Double-clicking does nothing, or it says the app is damaged and should be moved to the Trash</summary>
+      <div class="answer">
+        <p>That is how macOS treats an app without a paid Apple certificate; the file
+           itself is fine. Follow install steps 2 and 3: <strong>right-click → Open</strong>,
+           or System Settings → Privacy &amp; Security → <strong>Open Anyway</strong>.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>The first conversion is very slow, or it sits on “Starting the recognition engine”</summary>
+      <div class="answer">
+        <p>On the first launch after installing, macOS checks every file inside the app.
+           This one bundles two complete recognition engines, so there are a lot of files
+           and that check <strong>can take several minutes</strong>. It only happens once.
+           “Starting the recognition engine…” in the queue means it is working, not stuck.</p>
+        <p>Leave the app open for a moment and it finishes this in the background;
+           conversions after that run at normal speed.</p>
+        <p>Normal speed is about 5 seconds per page (around 15 on Intel).</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>One file turned red and failed</summary>
+      <div class="answer">
+        <p>Click that row and the Processing log below it expands with the reason.
+           The two common ones:</p>
+        <p><strong>No noteheads found</strong> — the page may be a cover, a table of
+           contents or a lyrics page, or the scan may be too faint.
+           <strong>The whole file failed</strong> — check the PDF really is sheet music
+           and not a heavily compressed image scan.</p>
+        <p>Trying again at 400 dpi is worth a shot.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>A multi-page piece came out as several files</summary>
+      <div class="answer">
+        <p>When one page is recognised with a different number of parts than the others
+           (a page misread as two staves, say), forcing them together would produce a
+           garbled score, so the pages are written out separately and the row is flagged.</p>
+        <p>You can join them by hand in MuseScore, or change the resolution and try
+           again to see whether that page reads correctly.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>The result has a lot of errors</summary>
+      <div class="answer">
+        <p>Start with the quality of the PDF. A photograph or a low-resolution scan
+           makes a large difference — get a cleaner copy if you can. Skewed scans can be
+           straightened in Preview first.</p>
+        <p>If the original is already clean and the result is still poor, that score is
+           beyond what the current engines handle. Try the other engine before giving up.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>MuseScore will not open the .mxl</summary>
+      <div class="answer">
+        <p>Check you have MuseScore 4 (<a href="https://musescore.org/en/download">musescore.org</a>,
+           free). <code>.mxl</code> is the standard compressed MusicXML format, so
+           Sibelius, Finale and Dorico read it too.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Does converting upload my scores anywhere?</summary>
+      <div class="answer">
+        <p>No. The recognition models and both engines are inside the app; everything
+           happens on your machine and no network connection is needed at any point.</p>
+      </div>
+    </details>
+  </section>
+
+  <footer>
+    <p>The recognition engines are <a href="https://github.com/liebharc/homr">homr</a> and
+       <a href="https://github.com/Audiveris/audiveris">Audiveris</a>, both licensed AGPL-3.0;
+       this app is distributed under AGPL-3.0 as well, and its full source is at
+       <a href="https://github.com/wubj/Pdf2Score">github.com/wubj/Pdf2Score</a>.</p>
+    <p>The windows and menus on this page are drawn illustrations, not screenshots;
+       what you see will vary a little with your version of macOS.</p>
+  </footer>
+
+</div>
+</body>
+</html>

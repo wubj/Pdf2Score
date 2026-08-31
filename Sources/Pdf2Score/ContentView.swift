@@ -60,13 +60,13 @@ private struct DropPlaceholder: View {
             Image(systemName: "music.note.list")
                 .font(.system(size: 52, weight: .thin))
                 .foregroundStyle(.secondary)
-            Text("把 PDF 樂譜拖進來")
+            Text("Drop PDF scores here")
                 .font(.title2)
-            Text("可以一次拖入多個檔案或整個資料夾，每份 PDF 會產生一個 MXL。")
+            Text("Drag in as many files as you like, or a whole folder. Each PDF produces one MXL.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-            Button("選擇檔案…") { model.chooseFiles() }
+            Button("Choose Files…") { model.chooseFiles() }
                 .padding(.top, 4)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -81,7 +81,7 @@ private struct JobList: View {
 
     private func retryLabel(for job: Job) -> String {
         let other = (job.engine ?? model.settings.engine).other
-        return "改用 \(other.label) 重新辨識"
+        return String(format: String(localized: "Re-recognise with %@"), other.label)
     }
 
     var body: some View {
@@ -91,15 +91,15 @@ private struct JobList: View {
                 JobRow(job: job)
                     .tag(job.id)
                     .contextMenu {
-                        Button("在 Finder 中顯示") { model.reveal(job) }
+                        Button("Show in Finder") { model.reveal(job) }
                             .disabled(job.outputs.isEmpty)
-                        Button("用 MuseScore 開啟") { model.openInMuseScore(job) }
+                        Button("Open in MuseScore") { model.openInMuseScore(job) }
                             .disabled(job.outputs.isEmpty)
                         Divider()
                         Button(retryLabel(for: job)) { model.retryWithOtherEngine(job) }
                             .disabled(model.isRunning || job.state == .queued)
                         Divider()
-                        Button("從清單移除", role: .destructive) { model.remove(job) }
+                        Button("Remove from List", role: .destructive) { model.remove(job) }
                             .disabled(model.isRunning && job.state == .running)
                     }
             }
@@ -123,7 +123,7 @@ private struct JobRow: View {
                 HStack(spacing: 6) {
                     Text(job.statusText)
                     if let message = job.message {
-                        Text("·").foregroundStyle(.tertiary)
+                        Text(verbatim: "·").foregroundStyle(.tertiary)
                         Text(message).lineLimit(1)
                     }
                 }
@@ -191,7 +191,9 @@ private struct LogPane: View {
             .frame(height: 150)
             .background(Color(nsColor: .textBackgroundColor))
         } label: {
-            Text("處理紀錄\(model.selectedJob.map { "（\($0.name)）" } ?? "")")
+            Text(model.selectedJob.map {
+                String(format: String(localized: "Processing log (%@)"), $0.name)
+            } ?? String(localized: "Processing log"))
                 .font(.caption)
         }
         .padding(.horizontal, 12)
@@ -213,7 +215,7 @@ private struct StatusBar: View {
             Text(outputDescription)
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            Button("變更…") { model.chooseOutputFolder() }
+            Button("Change…") { model.chooseOutputFolder() }
                 .buttonStyle(.link)
                 .font(.caption)
         }
@@ -223,9 +225,9 @@ private struct StatusBar: View {
 
     private var outputDescription: String {
         if let folder = model.settings.effectiveOutputDirectory {
-            return "輸出到 \(folder.lastPathComponent)"
+            return String(format: String(localized: "Saving to %@"), folder.lastPathComponent)
         }
-        return "輸出到 PDF 所在資料夾"
+        return String(localized: "Saving next to each PDF")
     }
 }
 
@@ -239,14 +241,14 @@ private struct Toolbar: ToolbarContent {
             Button {
                 model.chooseFiles()
             } label: {
-                Label("加入 PDF", systemImage: "plus")
+                Label("Add PDFs", systemImage: "plus")
             }
             .disabled(model.isRunning)
 
             // The engine belongs next to the Convert button, not in Settings:
             // it is a per-batch decision, and seeing which one is selected is
             // half of knowing what to do when a result comes out wrong.
-            Picker("辨識引擎", selection: $settings.engine) {
+            Picker("Recognition engine", selection: $settings.engine) {
                 ForEach(AppSettings.Engine.allCases, id: \.self) { engine in
                     Text(engine.label).tag(engine)
                 }
@@ -254,28 +256,28 @@ private struct Toolbar: ToolbarContent {
             .pickerStyle(.segmented)
             .labelsHidden()
             .disabled(model.isRunning)
-            .help("兩個辨識引擎的強項不同：homr 對拍照或掃描較模糊的譜比較有辦法，Audiveris 對乾淨的印刷譜較穩。轉出來不理想時換另一個再試。")
+            .help("The two engines are good at different things: homr copes better with photographed or soft-focus scans, Audiveris is steadier on clean engraving. When a result comes out badly, try the other one.")
 
             if model.isRunning {
                 Button(role: .destructive) {
                     model.cancel()
                 } label: {
-                    Label("停止", systemImage: "stop.fill")
+                    Label("Stop", systemImage: "stop.fill")
                 }
             } else {
                 Button {
                     model.start()
                 } label: {
-                    Label("開始轉換", systemImage: "play.fill")
+                    Label("Convert", systemImage: "play.fill")
                 }
                 .disabled(model.pendingJobs.isEmpty || model.needsBootstrap)
             }
 
             Menu {
-                Button("重試失敗的項目") { model.retryFailed() }
-                Button("清除已完成") { model.clearFinished() }
+                Button("Retry Failed Items") { model.retryFailed() }
+                Button("Clear Completed") { model.clearFinished() }
             } label: {
-                Label("更多", systemImage: "ellipsis.circle")
+                Label("More", systemImage: "ellipsis.circle")
             }
             .disabled(model.jobs.isEmpty)
         }

@@ -34,13 +34,18 @@ final class AppModel {
     var summary: String {
         let done = jobs.filter { $0.state == .done }.count
         let failed = jobs.filter { $0.state == .failed }.count
-        if isPreparing { return "正在啟動辨識引擎…安裝後第一次可能要好幾分鐘" }
-        if jobs.isEmpty {
-            return isWarmingUp ? "正在準備辨識引擎…" : "尚未加入檔案"
+        if isPreparing {
+            return String(localized: "Starting the recognition engine… the first run after installing can take several minutes")
         }
-        var parts = ["共 \(jobs.count) 個檔案", "完成 \(done)"]
-        if failed > 0 { parts.append("失敗 \(failed)") }
-        return parts.joined(separator: "・")
+        if jobs.isEmpty {
+            return String(localized: isWarmingUp ? "Preparing the recognition engine…" : "No files yet")
+        }
+        var parts = [
+            String(format: String(localized: "%d files"), jobs.count),
+            String(format: String(localized: "%d done"), done),
+        ]
+        if failed > 0 { parts.append(String(format: String(localized: "%d failed"), failed)) }
+        return parts.joined(separator: String(localized: "summary.separator"))
     }
 
     /// Called once when the window appears. Skipped when a conversion is
@@ -203,7 +208,7 @@ final class AppModel {
         case .pageError(let id, let page, let message):
             guard let job = job(id) else { return }
             job.completedPages += 1
-            job.appendLog("第 \(page) 頁失敗：\(message)\n")
+            job.appendLog(String(format: String(localized: "Page %d failed: %@"), page, message) + "\n")
 
         case .fileDone(let id, let outputs, _, let warning):
             guard let job = job(id) else { return }
@@ -253,8 +258,8 @@ final class AppModel {
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
         panel.allowsMultipleSelection = false
-        panel.prompt = "選擇"
-        panel.message = "選擇轉檔結果的存放資料夾"
+        panel.prompt = String(localized: "Choose")
+        panel.message = String(localized: "Choose where the converted files should go")
         if panel.runModal() == .OK, let url = panel.url {
             settings.customOutputFolder = url
             settings.outputLocation = .customFolder
@@ -267,8 +272,8 @@ final class AppModel {
         panel.canChooseFiles = true
         panel.allowsMultipleSelection = true
         panel.allowedContentTypes = [.pdf, .folder]
-        panel.prompt = "加入"
-        panel.message = "選擇要轉換的 PDF 樂譜（也可以選整個資料夾）"
+        panel.prompt = String(localized: "Add")
+        panel.message = String(localized: "Choose the PDF scores to convert — a whole folder works too")
         if panel.runModal() == .OK {
             add(urls: panel.urls)
         }

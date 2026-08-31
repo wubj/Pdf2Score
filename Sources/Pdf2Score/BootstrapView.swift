@@ -10,9 +10,9 @@ struct BootstrapView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("首次設定")
+                Text("First-time setup")
                     .font(.title2.bold())
-                Text("Pdf2Score 需要一個獨立的 Python 環境來執行 homr 辨識引擎。這只需要做一次，之後啟動會直接跳過。")
+                Text("Pdf2Score needs its own Python environment to run the homr engine. This happens once; later launches skip it.")
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -29,14 +29,14 @@ struct BootstrapView: View {
                             Text(hint)
                                 .font(.system(.callout, design: .monospaced))
                                 .textSelection(.enabled)
-                            Button("複製") {
+                            Button("Copy") {
                                 NSPasteboard.general.clearContents()
                                 NSPasteboard.general.setString(hint, forType: .string)
                             }
                             .controlSize(.small)
                         }
                     }
-                    Text("下載量約 300 MB，需要網路連線。")
+                    Text("About 300 MB will be downloaded. An internet connection is required.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -44,7 +44,7 @@ struct BootstrapView: View {
                 .padding(6)
             }
 
-            DisclosureGroup("安裝紀錄") {
+            DisclosureGroup("Installation log") {
                 ScrollView {
                     Text(bootstrap.log)
                         .font(.system(.caption2, design: .monospaced))
@@ -58,14 +58,14 @@ struct BootstrapView: View {
 
             HStack {
                 if bootstrap.isWorking {
-                    Button("取消") { bootstrap.cancel() }
+                    Button("Cancel") { bootstrap.cancel() }
                 }
                 Spacer()
                 if case .finished = bootstrap.phase {
-                    Button("開始使用") { model.needsBootstrap = false }
+                    Button("Start Using It") { model.needsBootstrap = false }
                         .keyboardShortcut(.defaultAction)
                 } else {
-                    Button(isFailed ? "重試" : "開始安裝") {
+                    Button(String(localized: isFailed ? "Retry" : "Install")) {
                         Task {
                             await bootstrap.install()
                             if case .finished = bootstrap.phase {

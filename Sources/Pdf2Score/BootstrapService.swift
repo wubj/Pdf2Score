@@ -18,12 +18,12 @@ final class BootstrapService {
 
         var title: String {
             switch self {
-            case .idle: return "準備中"
-            case .checkingInterpreter: return "尋找可用的 Python"
-            case .creatingEnvironment: return "建立 Python 環境"
-            case .installingPackages: return "安裝 homr 與相依套件（約 200 MB）"
-            case .downloadingModels: return "下載辨識模型（約 130 MB）"
-            case .finished: return "安裝完成"
+            case .idle: return String(localized: "Getting ready")
+            case .checkingInterpreter: return String(localized: "Looking for a usable Python")
+            case .creatingEnvironment: return String(localized: "Creating the Python environment")
+            case .installingPackages: return String(localized: "Installing homr and its dependencies (about 200 MB)")
+            case .downloadingModels: return String(localized: "Downloading the recognition models (about 130 MB)")
+            case .finished: return String(localized: "Setup finished")
             case .failed(let message): return message
             }
         }
@@ -53,13 +53,13 @@ final class BootstrapService {
             phase = .checkingInterpreter
             guard let interpreter = PythonEnvironment.findInterpreter() else {
                 missingPythonHint = "brew install python@3.13"
-                phase = .failed("找不到 Python 3.11–3.15。請先安裝 Python 後再試一次。")
+                phase = .failed(String(localized: "No Python 3.11–3.15 found. Install Python and try again."))
                 return
             }
-            append("使用 \(interpreter)\n")
+            append(String(format: String(localized: "Using %@"), interpreter) + "\n")
 
             guard let requirements = PythonEnvironment.requirementsFile else {
-                phase = .failed("找不到 requirements.txt，App 內容可能不完整。")
+                phase = .failed(String(localized: "Could not find requirements.txt — the app may be incomplete."))
                 return
             }
 
@@ -82,11 +82,12 @@ final class BootstrapService {
 
             try PythonEnvironment.writeMarker()
             phase = .finished
-            append("\n環境準備完成。\n")
+            append("\n" + String(localized: "The environment is ready.") + "\n")
         } catch let error as CommandError {
-            phase = .failed("安裝失敗（\(error.command) 結束代碼 \(error.status)）。詳見下方紀錄。")
+            phase = .failed(String(format: String(localized: "Setup failed (%1$@ exited with code %2$d). See the log below."),
+                                   error.command, error.status))
         } catch {
-            phase = .failed("安裝失敗：\(error.localizedDescription)")
+            phase = .failed(String(format: String(localized: "Setup failed: %@"), error.localizedDescription))
         }
     }
 
@@ -120,7 +121,7 @@ final class BootstrapService {
                 append(line + "\n")
             }
         } catch {
-            append("(讀取輸出中斷：\(error.localizedDescription))\n")
+            append(String(format: String(localized: "(output interrupted: %@)"), error.localizedDescription) + "\n")
         }
         process.waitUntilExit()
         current = nil

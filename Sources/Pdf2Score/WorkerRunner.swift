@@ -38,9 +38,9 @@ final class WorkerRunner: @unchecked Sendable {
         var errorDescription: String? {
             switch self {
             case .notInstalled:
-                return "Python 執行環境尚未安裝完成。"
+                return String(localized: "The Python environment is not installed yet.")
             case .missingScript:
-                return "找不到 worker.py，App 內容可能不完整。"
+                return String(localized: "Could not find worker.py — the app may be incomplete.")
             }
         }
     }
@@ -119,7 +119,9 @@ final class WorkerRunner: @unchecked Sendable {
                 self?.process = nil
                 self?.lock.unlock()
                 if !cancelled && process.terminationStatus != 0 {
-                    continuation.yield(.log("\n工作程序結束，代碼 \(process.terminationStatus)\n"))
+                    let note = String(format: String(localized: "The worker exited with code %d"),
+                                      process.terminationStatus)
+                    continuation.yield(.log("\n" + note + "\n"))
                 }
                 continuation.finish()
             }
@@ -270,7 +272,7 @@ final class WorkerRunner: @unchecked Sendable {
                 warning: object["warning"] as? String
             )
         case "file_error":
-            return .fileError(id: id, message: object["message"] as? String ?? "未知錯誤")
+            return .fileError(id: id, message: object["message"] as? String ?? String(localized: "Unknown error"))
         case "all_done":
             return .allDone
         default:

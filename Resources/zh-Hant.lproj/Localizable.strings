@@ -1,0 +1,101 @@
+/* 繁體中文。zh-Hans.lproj 由 Makefile 從這份複製產生，所以簡體中文系統
+   看到的也是繁體介面（見 README 的說明）。 */
+
+/* 視窗：佇列與工具列 */
+"Add PDFs…" = "加入 PDF…";
+"Add PDFs" = "加入 PDF";
+"Convert" = "開始轉換";
+"Stop" = "停止";
+"More" = "更多";
+"Recognition engine" = "辨識引擎";
+"The two engines are good at different things: homr copes better with photographed or soft-focus scans, Audiveris is steadier on clean engraving. When a result comes out badly, try the other one." = "兩個辨識引擎的強項不同：homr 對拍照或掃描較模糊的譜比較有辦法，Audiveris 對乾淨的印刷譜較穩。轉出來不理想時換另一個再試。";
+"Drop PDF scores here" = "把 PDF 樂譜拖進來";
+"Drag in as many files as you like, or a whole folder. Each PDF produces one MXL." = "可以一次拖入多個檔案或整個資料夾，每份 PDF 會產生一個 MXL。";
+"Choose Files…" = "選擇檔案…";
+"Show in Finder" = "在 Finder 中顯示";
+"Open in MuseScore" = "用 MuseScore 開啟";
+"Remove from List" = "從清單移除";
+"Re-recognise with %@" = "改用 %@ 重新辨識";
+"Retry Failed Items" = "重試失敗的項目";
+"Clear Completed" = "清除已完成";
+"Processing log" = "處理紀錄";
+"Processing log (%@)" = "處理紀錄（%@）";
+"Change…" = "變更…";
+"Saving next to each PDF" = "輸出到 PDF 所在資料夾";
+"Saving to %@" = "輸出到 %@";
+
+/* 佇列狀態 */
+"Waiting" = "等待中";
+"Starting the recognition engine… (the first run after installing can take several minutes)" = "啟動辨識引擎…（安裝後第一次可能要好幾分鐘）";
+"Reading PDF…" = "讀取 PDF…";
+"Page %d of %d" = "辨識第 %d / %d 頁";
+"Done" = "完成";
+"Done, with warnings" = "完成（有警告）";
+"Failed" = "失敗";
+"Cancelled" = "已取消";
+"Page %d failed: %@" = "第 %d 頁失敗：%@";
+
+/* 狀態列 */
+"No files yet" = "尚未加入檔案";
+"Preparing the recognition engine…" = "正在準備辨識引擎…";
+"Starting the recognition engine… the first run after installing can take several minutes" = "正在啟動辨識引擎…安裝後第一次可能要好幾分鐘";
+"%d files" = "共 %d 個檔案";
+"%d done" = "完成 %d";
+"%d failed" = "失敗 %d";
+"summary.separator" = "・";
+
+/* 開啟與儲存面板 */
+"Add" = "加入";
+"Choose" = "選擇";
+"Choose the PDF scores to convert — a whole folder works too" = "選擇要轉換的 PDF 樂譜（也可以選整個資料夾）";
+"Choose where the converted files should go" = "選擇轉檔結果的存放資料夾";
+
+/* 設定 */
+"Output" = "輸出";
+"Location" = "存放位置";
+"Next to the source PDF" = "與來源 PDF 同資料夾";
+"A folder I choose" = "指定資料夾";
+"Nothing chosen yet" = "尚未選擇";
+"Choose…" = "選擇…";
+"Also keep the uncompressed .musicxml" = "同時保留未壓縮的 .musicxml";
+"Usually the .mxl is all you need; the .musicxml is for reading the score in a text editor or putting it under version control." = "平常只需要 .mxl；要用文字編輯器或版本控管看樂譜內容時才需要 .musicxml。";
+"Reveal in Finder when finished" = "轉檔完成後在 Finder 中顯示";
+"Recognition" = "辨識";
+"Merge multi-page PDFs into one file" = "把多頁 PDF 合併成單一檔案";
+"Pages that disagree on their part layout are written out separately instead. Audiveris handles multi-page scores itself and ignores this setting." = "各頁的聲部結構不一致時會自動改為分頁輸出。Audiveris 自己就會處理多頁，不受這個設定影響。";
+"Rendering resolution (homr only)" = "算圖解析度（只影響 homr）";
+"200 dpi (faster)" = "200 dpi（較快）";
+"300 dpi (recommended)" = "300 dpi（建議）";
+"400 dpi (for soft scans)" = "400 dpi（掃描件模糊時）";
+"Use the Apple GPU for the encoder" = "用 Apple GPU 加速 encoder";
+"homr only. The first run has to compile a CoreML model, so this pays off across many files rather than one." = "只影響 homr。第一次執行需要編譯 CoreML 模型，檔案數量多時才划算。";
+
+/* 首次設定 */
+"First-time setup" = "首次設定";
+"Pdf2Score needs its own Python environment to run the homr engine. This happens once; later launches skip it." = "Pdf2Score 需要一個獨立的 Python 環境來執行 homr 辨識引擎。這只需要做一次，之後啟動會直接跳過。";
+"About 300 MB will be downloaded. An internet connection is required." = "下載量約 300 MB，需要網路連線。";
+"Installation log" = "安裝紀錄";
+"Copy" = "複製";
+"Cancel" = "取消";
+"Retry" = "重試";
+"Install" = "開始安裝";
+"Start Using It" = "開始使用";
+"Getting ready" = "準備中";
+"Looking for a usable Python" = "尋找可用的 Python";
+"Creating the Python environment" = "建立 Python 環境";
+"Installing homr and its dependencies (about 200 MB)" = "安裝 homr 與相依套件（約 200 MB）";
+"Downloading the recognition models (about 130 MB)" = "下載辨識模型（約 130 MB）";
+"Setup finished" = "安裝完成";
+"No Python 3.11–3.15 found. Install Python and try again." = "找不到 Python 3.11–3.15。請先安裝 Python 後再試一次。";
+"Could not find requirements.txt — the app may be incomplete." = "找不到 requirements.txt，App 內容可能不完整。";
+"Setup failed (%1$@ exited with code %2$d). See the log below." = "安裝失敗（%1$@ 結束代碼 %2$d）。詳見下方紀錄。";
+"Setup failed: %@" = "安裝失敗：%@";
+"Using %@" = "使用 %@";
+"The environment is ready." = "環境準備完成。";
+"(output interrupted: %@)" = "（讀取輸出中斷：%@）";
+
+/* Worker */
+"The Python environment is not installed yet." = "Python 執行環境尚未安裝完成。";
+"Could not find worker.py — the app may be incomplete." = "找不到 worker.py，App 內容可能不完整。";
+"The worker exited with code %d" = "工作程序結束，代碼 %d";
+"Unknown error" = "未知錯誤";

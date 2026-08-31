@@ -1,0 +1,102 @@
+/* Base language. Keys are the English text itself, so the source reads
+   naturally and an untranslated string degrades to English rather than to a
+   key name. See zh-Hant.lproj for the Chinese translation. */
+
+/* Window: queue and toolbar */
+"Add PDFs…" = "Add PDFs…";
+"Add PDFs" = "Add PDFs";
+"Convert" = "Convert";
+"Stop" = "Stop";
+"More" = "More";
+"Recognition engine" = "Recognition engine";
+"The two engines are good at different things: homr copes better with photographed or soft-focus scans, Audiveris is steadier on clean engraving. When a result comes out badly, try the other one." = "The two engines are good at different things: homr copes better with photographed or soft-focus scans, Audiveris is steadier on clean engraving. When a result comes out badly, try the other one.";
+"Drop PDF scores here" = "Drop PDF scores here";
+"Drag in as many files as you like, or a whole folder. Each PDF produces one MXL." = "Drag in as many files as you like, or a whole folder. Each PDF produces one MXL.";
+"Choose Files…" = "Choose Files…";
+"Show in Finder" = "Show in Finder";
+"Open in MuseScore" = "Open in MuseScore";
+"Remove from List" = "Remove from List";
+"Re-recognise with %@" = "Re-recognise with %@";
+"Retry Failed Items" = "Retry Failed Items";
+"Clear Completed" = "Clear Completed";
+"Processing log" = "Processing log";
+"Processing log (%@)" = "Processing log (%@)";
+"Change…" = "Change…";
+"Saving next to each PDF" = "Saving next to each PDF";
+"Saving to %@" = "Saving to %@";
+
+/* Queue status */
+"Waiting" = "Waiting";
+"Starting the recognition engine… (the first run after installing can take several minutes)" = "Starting the recognition engine… (the first run after installing can take several minutes)";
+"Reading PDF…" = "Reading PDF…";
+"Page %d of %d" = "Page %d of %d";
+"Done" = "Done";
+"Done, with warnings" = "Done, with warnings";
+"Failed" = "Failed";
+"Cancelled" = "Cancelled";
+"Page %d failed: %@" = "Page %d failed: %@";
+
+/* Status bar */
+"No files yet" = "No files yet";
+"Preparing the recognition engine…" = "Preparing the recognition engine…";
+"Starting the recognition engine… the first run after installing can take several minutes" = "Starting the recognition engine… the first run after installing can take several minutes";
+"%d files" = "%d files";
+"%d done" = "%d done";
+"%d failed" = "%d failed";
+"summary.separator" = " · ";
+
+/* Open and save panels */
+"Add" = "Add";
+"Choose" = "Choose";
+"Choose the PDF scores to convert — a whole folder works too" = "Choose the PDF scores to convert — a whole folder works too";
+"Choose where the converted files should go" = "Choose where the converted files should go";
+
+/* Settings */
+"Output" = "Output";
+"Location" = "Location";
+"Next to the source PDF" = "Next to the source PDF";
+"A folder I choose" = "A folder I choose";
+"Nothing chosen yet" = "Nothing chosen yet";
+"Choose…" = "Choose…";
+"Also keep the uncompressed .musicxml" = "Also keep the uncompressed .musicxml";
+"Usually the .mxl is all you need; the .musicxml is for reading the score in a text editor or putting it under version control." = "Usually the .mxl is all you need; the .musicxml is for reading the score in a text editor or putting it under version control.";
+"Reveal in Finder when finished" = "Reveal in Finder when finished";
+"Recognition" = "Recognition";
+"Merge multi-page PDFs into one file" = "Merge multi-page PDFs into one file";
+"Pages that disagree on their part layout are written out separately instead. Audiveris handles multi-page scores itself and ignores this setting." = "Pages that disagree on their part layout are written out separately instead. Audiveris handles multi-page scores itself and ignores this setting.";
+"Rendering resolution (homr only)" = "Rendering resolution (homr only)";
+"200 dpi (faster)" = "200 dpi (faster)";
+"300 dpi (recommended)" = "300 dpi (recommended)";
+"400 dpi (for soft scans)" = "400 dpi (for soft scans)";
+"Use the Apple GPU for the encoder" = "Use the Apple GPU for the encoder";
+"homr only. The first run has to compile a CoreML model, so this pays off across many files rather than one." = "homr only. The first run has to compile a CoreML model, so this pays off across many files rather than one.";
+
+/* First-run setup */
+"First-time setup" = "First-time setup";
+"Pdf2Score needs its own Python environment to run the homr engine. This happens once; later launches skip it." = "Pdf2Score needs its own Python environment to run the homr engine. This happens once; later launches skip it.";
+"About 300 MB will be downloaded. An internet connection is required." = "About 300 MB will be downloaded. An internet connection is required.";
+"Installation log" = "Installation log";
+"Copy" = "Copy";
+"Cancel" = "Cancel";
+"Retry" = "Retry";
+"Install" = "Install";
+"Start Using It" = "Start Using It";
+"Getting ready" = "Getting ready";
+"Looking for a usable Python" = "Looking for a usable Python";
+"Creating the Python environment" = "Creating the Python environment";
+"Installing homr and its dependencies (about 200 MB)" = "Installing homr and its dependencies (about 200 MB)";
+"Downloading the recognition models (about 130 MB)" = "Downloading the recognition models (about 130 MB)";
+"Setup finished" = "Setup finished";
+"No Python 3.11–3.15 found. Install Python and try again." = "No Python 3.11–3.15 found. Install Python and try again.";
+"Could not find requirements.txt — the app may be incomplete." = "Could not find requirements.txt — the app may be incomplete.";
+"Setup failed (%1$@ exited with code %2$d). See the log below." = "Setup failed (%1$@ exited with code %2$d). See the log below.";
+"Setup failed: %@" = "Setup failed: %@";
+"Using %@" = "Using %@";
+"The environment is ready." = "The environment is ready.";
+"(output interrupted: %@)" = "(output interrupted: %@)";
+
+/* Worker */
+"The Python environment is not installed yet." = "The Python environment is not installed yet.";
+"Could not find worker.py — the app may be incomplete." = "Could not find worker.py — the app may be incomplete.";
+"The worker exited with code %d" = "The worker exited with code %d";
+"Unknown error" = "Unknown error";

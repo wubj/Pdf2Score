@@ -9,7 +9,7 @@ models, so paying that cost once and reusing it across every page of every file
 is dramatically faster than spawning a process per file.
 
     {"jobs":    [{"id": "A1", "pdf": "/path/to/score.pdf"}],
-     "options": {"engine": "homr", "audiverisPath": null,
+     "options": {"engine": "homr", "audiverisPath": null, "language": "en",
                  "outputDir": null, "dpi": 300, "merge": true, "keepMusicXml": false,
                  "coremlEncoder": false, "keepPreviews": false,
                  "largePage": false, "metronome": null, "tempo": null}}
@@ -111,6 +111,40 @@ from musicxml_merge import MergeMismatch, ensure_title, merge_pages  # noqa: E40
 from mxl import write_mxl  # noqa: E402
 
 
+# The app passes its resolved UI language down so the messages that surface in
+# the queue match the rest of the interface. Anything not listed here is
+# developer-facing and stays in English.
+_MESSAGES = {
+    "en": {
+        "no_pages": "The PDF has no pages",
+        "all_failed": "Every page failed — this may not be sheet music, or the scan is too poor",
+        "merge_failed": "Could not merge the pages, so they were written out separately: {detail}",
+        "pages_skipped": "{count} page(s) failed and were skipped",
+        "audiveris_missing": "The Audiveris engine is missing — the app may be incomplete",
+        "audiveris_failed": "Audiveris could not read this PDF",
+        "exit_code": " (exit code {code})",
+        "no_score": " — no score was produced",
+    },
+    "zh-Hant": {
+        "no_pages": "PDF 沒有任何頁面",
+        "all_failed": "所有頁面都辨識失敗（可能不是樂譜，或掃描品質太低）",
+        "merge_failed": "無法合併分頁，已改為分頁輸出：{detail}",
+        "pages_skipped": "有 {count} 頁辨識失敗，已略過",
+        "audiveris_missing": "找不到 Audiveris 辨識引擎，App 內容可能不完整",
+        "audiveris_failed": "Audiveris 無法辨識這份 PDF",
+        "exit_code": "（結束代碼 {code}）",
+        "no_score": "，沒有產生任何樂譜",
+    },
+}
+
+_language = "en"
+
+
+def text(key: str, **fields: Any) -> str:
+    table = _MESSAGES.get(_language) or _MESSAGES["en"]
+    return table[key].format(**fields)
+
+
 def log(*parts: Any) -> None:
     print(*parts, file=sys.stderr, flush=True)
 
@@ -188,7 +222,7 @@ def process_job(
         page_images = render_pages(pdf_path, work_dir, int(options.get("dpi", 300)))
         emit(event="file_start", id=job_id, name=os.path.basename(pdf_path), pages=len(page_images))
         if not page_images:
-            raise ValueError("PDF 沒有任何頁面")
+            raise ValueError(text("no_pages"))
 
         page_xmls: list[str] = []
         for number, image in enumerate(page_images, start=1):
@@ -205,7 +239,7 @@ def process_job(
             emit(event="page_done", id=job_id, page=number)
 
         if not page_xmls:
-            raise ValueError("所有頁面都辨識失敗（可能不是樂譜，或掃描品質太低）")
+            raise ValueError(text("all_failed"))
 
         if options.get("keepPreviews"):
             _copy_previews(page_images, out_dir, stem)
@@ -220,7 +254,7 @@ def process_job(
                 merge_pages(page_xmls, merged_path, stem)
                 merged = True
             except MergeMismatch as mismatch:
-                warning = f"無法合併分頁，已改為分頁輸出：{mismatch}"
+                warning = text("merge_failed", detail=mismatch)
                 log(warning)
         elif len(page_xmls) == 1:
             merged_path = page_xmls[0]
@@ -238,8 +272,8 @@ def process_job(
 
         if len(page_xmls) < len(page_images):
             skipped = len(page_images) - len(page_xmls)
-            note = f"有 {skipped} 頁辨識失敗，已略過"
-            warning = f"{warning}；{note}" if warning else note
+            note = text("pages_skipped", count=skipped)
+            warning = f"{warning} · {note}" if warning else note
 
         emit(event="file_done", id=job_id, outputs=outputs, merged=merged, warning=warning)
     finally:
@@ -262,7 +296,7 @@ def process_job_audiveris(
     """
     launcher = options.get("audiverisPath")
     if not launcher or not os.path.exists(launcher):
-        raise ValueError("找不到 Audiveris 辨識引擎，App 內容可能不完整")
+        raise ValueError(text("audiveris_missing"))
 
     page_count = count_pdf_pages(pdf_path)
     emit(event="file_start", id=job_id, name=os.path.basename(pdf_path), pages=page_count)
@@ -291,10 +325,8 @@ def process_job_audiveris(
 
         produced = glob.glob(os.path.join(work_dir, "*.mxl"))
         if code != 0 or not produced:
-            raise ValueError(
-                "Audiveris 無法辨識這份 PDF"
-                + (f"（結束代碼 {code}）" if code != 0 else "，沒有產生任何樂譜")
-            )
+            detail = text("exit_code", code=code) if code != 0 else text("no_score")
+            raise ValueError(text("audiveris_failed") + detail)
 
         target = unique_path(os.path.join(out_dir, stem + ".mxl"))
         shutil.copyfile(produced[0], target)
@@ -388,6 +420,9 @@ def main() -> int:
     spec = json.load(sys.stdin)
     jobs = spec.get("jobs", [])
     options = spec.get("options", {})
+
+    global _language
+    _language = options.get("language") if options.get("language") in _MESSAGES else "en"
 
     config, xml_args = build_config(options)
     emit(event="ready")

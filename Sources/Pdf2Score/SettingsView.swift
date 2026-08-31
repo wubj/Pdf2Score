@@ -7,44 +7,44 @@ struct SettingsView: View {
         @Bindable var settings = model.settings
 
         Form {
-            Section("輸出") {
-                Picker("存放位置", selection: $settings.outputLocation) {
-                    Text("與來源 PDF 同資料夾").tag(AppSettings.OutputLocation.besideSource)
-                    Text("指定資料夾").tag(AppSettings.OutputLocation.customFolder)
+            Section("Output") {
+                Picker("Location", selection: $settings.outputLocation) {
+                    Text("Next to the source PDF").tag(AppSettings.OutputLocation.besideSource)
+                    Text("A folder I choose").tag(AppSettings.OutputLocation.customFolder)
                 }
                 .pickerStyle(.radioGroup)
 
                 HStack {
-                    Text(settings.customOutputFolder?.path ?? "尚未選擇")
+                    Text(settings.customOutputFolder?.path ?? String(localized: "Nothing chosen yet"))
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                         .truncationMode(.head)
                     Spacer()
-                    Button("選擇…") { model.chooseOutputFolder() }
+                    Button("Choose…") { model.chooseOutputFolder() }
                 }
                 .disabled(settings.outputLocation != .customFolder)
 
-                Toggle("同時保留未壓縮的 .musicxml", isOn: $settings.keepMusicXml)
-                Text("平常只需要 .mxl；要用文字編輯器或版本控管看樂譜內容時才需要 .musicxml。")
+                Toggle("Also keep the uncompressed .musicxml", isOn: $settings.keepMusicXml)
+                Text("Usually the .mxl is all you need; the .musicxml is for reading the score in a text editor or putting it under version control.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                Toggle("轉檔完成後在 Finder 中顯示", isOn: $settings.revealInFinderWhenDone)
+                Toggle("Reveal in Finder when finished", isOn: $settings.revealInFinderWhenDone)
             }
 
-            Section("辨識") {
-                Toggle("把多頁 PDF 合併成單一檔案", isOn: $settings.mergePages)
-                Text("各頁的聲部結構不一致時會自動改為分頁輸出。Audiveris 自己就會處理多頁，不受這個設定影響。")
+            Section("Recognition") {
+                Toggle("Merge multi-page PDFs into one file", isOn: $settings.mergePages)
+                Text("Pages that disagree on their part layout are written out separately instead. Audiveris handles multi-page scores itself and ignores this setting.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
-                Picker("算圖解析度（只影響 homr）", selection: $settings.dpi) {
-                    Text("200 dpi（較快）").tag(200)
-                    Text("300 dpi（建議）").tag(300)
-                    Text("400 dpi（掃描件模糊時）").tag(400)
+                Picker("Rendering resolution (homr only)", selection: $settings.dpi) {
+                    Text("200 dpi (faster)").tag(200)
+                    Text("300 dpi (recommended)").tag(300)
+                    Text("400 dpi (for soft scans)").tag(400)
                 }
 
-                Toggle("用 Apple GPU 加速 encoder", isOn: $settings.coremlEncoder)
-                Text("只影響 homr。第一次執行需要編譯 CoreML 模型，檔案數量多時才划算。")
+                Toggle("Use the Apple GPU for the encoder", isOn: $settings.coremlEncoder)
+                Text("homr only. The first run has to compile a CoreML model, so this pays off across many files rather than one.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

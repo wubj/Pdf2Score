@@ -1,0 +1,448 @@
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="badge">
+      <img src="data:image/png;base64,ICON_B64" alt="The Pdf2Score app icon: a quarter note on a white page over blue">
+      <div>
+        <p class="kicker">Install &amp; use · <a href="https://wubj.github.io/Pdf2Score/">繁體中文</a></p>
+        <h1>Pdf2Score</h1>
+      </div>
+    </div>
+    <p class="standfirst">
+      Turn PDF sheet music into files MuseScore can open. Drag a PDF in,
+      every page is recognised, and multi-page scores are stitched into one piece.
+    </p>
+    <svg class="stave" viewBox="0 0 700 30" preserveAspectRatio="none" aria-hidden="true">
+      <g stroke="var(--rule)" stroke-width="1">
+        <line x1="0" y1="3"  x2="700" y2="3"></line>
+        <line x1="0" y1="9"  x2="700" y2="9"></line>
+        <line x1="0" y1="15" x2="700" y2="15"></line>
+        <line x1="0" y1="21" x2="700" y2="21"></line>
+        <line x1="0" y1="27" x2="700" y2="27"></line>
+      </g>
+      <rect x="0" y="3" width="2.5" height="24" fill="var(--accent)"></rect>
+    </svg>
+  </header>
+
+  <section>
+    <h2>Before you start</h2>
+    <p class="section-note">Four things to check. If they all hold, carry on.</p>
+    <dl class="specs">
+      <div class="spec">
+        <dt>Mac model</dt>
+        <dd>Either kind
+          <span>Apple Silicon and Intel have separate installers, and
+                <strong>the wrong one will not open</strong>.
+                Apple menu → About This Mac, look at the Chip row.</span>
+        </dd>
+      </div>
+      <div class="spec">
+        <dt>System version</dt>
+        <dd>macOS 14 or later
+          <span>Same window. Sonoma, Sequoia and Tahoe all work.</span>
+        </dd>
+      </div>
+      <div class="spec">
+        <dt>Also needed</dt>
+        <dd>MuseScore
+          <span>You will open and proofread the results in it.
+                <a href="https://musescore.org/en/download">Free download</a>.</span>
+        </dd>
+      </div>
+      <div class="spec">
+        <dt>Internet</dt>
+        <dd>Not needed
+          <span>Recognition runs on your own machine; no score is uploaded anywhere.</span>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Download</h2>
+    <p class="section-note">
+      The two installers are for different machines, and
+      <strong>the wrong one will not open</strong>.
+      Apple menu → About This Mac, look at the “Chip” or “Processor” row.
+    </p>
+    <div class="downloads">
+      <a class="download" href="https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-AppleSilicon.dmg" target="_blank" rel="noopener">
+        <span class="machine">Apple M1 / M2 / M3⋯</span>
+        <span class="file">Pdf2Score-AppleSilicon.dmg</span>
+        <span class="size">279 MB</span>
+      </a>
+      <a class="download" href="https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-Intel.dmg" target="_blank" rel="noopener">
+        <span class="machine">Intel</span>
+        <span class="file">Pdf2Score-Intel.dmg</span>
+        <span class="size">313 MB</span>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Install</h2>
+    <p class="section-note">
+      The warning in step 3 is expected, and does not mean anything is wrong with the
+      file — this app has no paid Apple certificate, so macOS blocks it once by
+      default. You only have to do this the first time.
+    </p>
+
+    <ol class="steps">
+
+      <li class="step">
+        <div class="bar-number">1</div>
+        <div class="step-body">
+          <h3>Open the .dmg you downloaded</h3>
+          <p>Double-click it in your Downloads folder. A window opens: drag
+             <strong>Pdf2Score</strong> onto the <strong>Applications</strong> folder
+             beside it.</p>
+          <figure>
+            <svg viewBox="0 0 660 260" role="img" aria-label="Illustration: dragging the Pdf2Score icon onto the Applications folder inside the disk image window">
+              <rect x="30" y="20" width="600" height="220" rx="12" fill="var(--paper)" stroke="var(--rule)"></rect>
+              <rect x="30" y="20" width="600" height="34" rx="12" fill="var(--panel)" stroke="var(--rule)"></rect>
+              <path d="M30 54 h600" stroke="var(--rule)"></path>
+              <g fill="var(--rule)">
+                <circle cx="52" cy="37" r="5"></circle>
+                <circle cx="70" cy="37" r="5"></circle>
+                <circle cx="88" cy="37" r="5"></circle>
+              </g>
+              <text x="330" y="42" text-anchor="middle" font-family="var(--body)" font-size="14" fill="var(--muted)">Pdf2Score</text>
+
+              <rect x="140" y="96" width="76" height="76" rx="17" fill="var(--accent)" opacity=".12"></rect>
+              <rect x="140" y="96" width="76" height="76" rx="17" fill="none" stroke="var(--accent)" stroke-width="1.5"></rect>
+              <ellipse cx="172" cy="146" rx="15" ry="11" fill="var(--accent)"></ellipse>
+              <path d="M186 146 V112" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"></path>
+              <text x="178" y="198" text-anchor="middle" font-family="var(--body)" font-size="14" fill="var(--ink)">Pdf2Score</text>
+
+              <path d="M258 134 h124" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="7 6" stroke-linecap="round"></path>
+              <path d="M382 134 l-13 -8 v16 z" fill="var(--accent)"></path>
+
+              <path d="M420 104 h30 l9 12 h37 a8 8 0 0 1 8 8 v40 a8 8 0 0 1 -8 8 h-76 a8 8 0 0 1 -8 -8 v-52 a8 8 0 0 1 8 -8 z"
+                    fill="var(--panel)" stroke="var(--rule)" stroke-width="1.5"></path>
+              <text x="466" y="198" text-anchor="middle" font-family="var(--body)" font-size="14" fill="var(--ink)">Applications</text>
+            </svg>
+            <figcaption>Drag to install. Once you let go the copy is done and you can close the window.</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li class="step">
+        <div class="bar-number">2</div>
+        <div class="step-body">
+          <h3>Open it from Applications with a right-click</h3>
+          <p><strong>Do not double-click</strong> for this first launch.
+             <strong>Right-click</strong> Pdf2Score (or Control-click it) and choose
+             <strong>Open</strong> from the menu.</p>
+          <figure>
+            <svg viewBox="0 0 660 250" role="img" aria-label="Illustration: right-clicking the app icon, with Open highlighted in the shortcut menu">
+              <rect x="60" y="34" width="76" height="76" rx="17" fill="var(--accent)" opacity=".12"></rect>
+              <rect x="60" y="34" width="76" height="76" rx="17" fill="none" stroke="var(--accent)" stroke-width="1.5"></rect>
+              <ellipse cx="92" cy="84" rx="15" ry="11" fill="var(--accent)"></ellipse>
+              <path d="M106 84 V50" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"></path>
+              <text x="98" y="136" text-anchor="middle" font-family="var(--body)" font-size="14" fill="var(--ink)">Pdf2Score</text>
+
+              <path d="M118 92 l0 26 l6 -6 l5 11 l5 -2 l-5 -11 l8 0 z" fill="var(--ink)" stroke="var(--paper)" stroke-width="1.5"></path>
+
+              <rect x="150" y="96" width="210" height="132" rx="9" fill="var(--paper)" stroke="var(--rule)"></rect>
+              <rect x="156" y="104" width="198" height="26" rx="6" fill="var(--accent)"></rect>
+              <text x="170" y="122" font-family="var(--body)" font-size="14" font-weight="600" fill="var(--paper)">Open</text>
+              <text x="170" y="152" font-family="var(--body)" font-size="14" fill="var(--muted)">Open With</text>
+              <path d="M156 166 h198" stroke="var(--hairline)"></path>
+              <text x="170" y="188" font-family="var(--body)" font-size="14" fill="var(--muted)">Get Info</text>
+              <text x="170" y="214" font-family="var(--body)" font-size="14" fill="var(--muted)">Move to Trash</text>
+
+              <path d="M392 118 h-24" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"></path>
+              <path d="M368 118 l13 -7 v14 z" fill="var(--accent)"></path>
+              <text x="402" y="115" font-family="var(--body)" font-size="14" font-weight="600" fill="var(--accent)">This one</text>
+              <text x="402" y="136" font-family="var(--body)" font-size="13" fill="var(--muted)">double-clicking is blocked</text>
+            </svg>
+            <figcaption>Only the first launch needs this. After that, double-clicking works normally.</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li class="step">
+        <div class="bar-number">3</div>
+        <div class="step-body">
+          <h3>Click Open in the warning dialog</h3>
+          <p>You will see something like “Apple could not verify … it may contain
+             malware”. Click <strong>Open</strong>.</p>
+          <div class="note alert">
+            <p><strong>If the dialog only offers “Move to Trash” and “Cancel”, with no Open:</strong></p>
+            <p>Click Cancel, then open <strong>System Settings → Privacy &amp; Security</strong>
+               and scroll to the bottom. A line says Pdf2Score was blocked — click
+               <strong>Open Anyway</strong> next to it and enter your password.</p>
+          </div>
+          <figure>
+            <svg viewBox="0 0 660 210" role="img" aria-label="Illustration: the Privacy and Security page in System Settings with an Open Anyway button">
+              <rect x="30" y="18" width="600" height="174" rx="12" fill="var(--paper)" stroke="var(--rule)"></rect>
+              <rect x="30" y="18" width="196" height="174" rx="12" fill="var(--panel)"></rect>
+              <path d="M226 18 v174" stroke="var(--rule)"></path>
+              <text x="54" y="50" font-family="var(--body)" font-size="14" fill="var(--muted)">System Settings</text>
+              <rect x="46" y="66" width="170" height="26" rx="6" fill="var(--accent)" opacity=".14"></rect>
+              <text x="58" y="84" font-family="var(--body)" font-size="13" font-weight="600" fill="var(--accent)">Privacy &amp; Security</text>
+              <text x="60" y="116" font-family="var(--body)" font-size="14" fill="var(--muted)">Appearance</text>
+              <text x="60" y="144" font-family="var(--body)" font-size="14" fill="var(--muted)">Sound</text>
+
+              <text x="252" y="52" font-family="var(--body)" font-size="14" font-weight="600" fill="var(--ink)">Security</text>
+              <path d="M252 66 h354" stroke="var(--hairline)"></path>
+              <text x="252" y="94" font-family="var(--body)" font-size="13.5" fill="var(--muted)">Allow applications from</text>
+              <rect x="252" y="118" width="354" height="52" rx="8" fill="var(--accent-wash)" stroke="var(--accent)" stroke-width="1.5"></rect>
+              <text x="266" y="142" font-family="var(--body)" font-size="13" fill="var(--ink)">“Pdf2Score” was blocked because it is</text>
+              <text x="266" y="160" font-family="var(--body)" font-size="13" fill="var(--ink)">not from an identified developer.</text>
+              <rect x="492" y="132" width="100" height="27" rx="7" fill="var(--accent)"></rect>
+              <text x="542" y="150" text-anchor="middle" font-family="var(--body)" font-size="12.5" font-weight="600" fill="var(--paper)">Open Anyway</text>
+            </svg>
+            <figcaption>That line only appears after you have tried to open the app, at the bottom of the page.</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li class="step">
+        <div class="bar-number">4</div>
+        <div class="step-body">
+          <h3>That's it</h3>
+          <p>The app opens to an empty window, waiting for PDFs. Nothing to configure,
+             no account, no download to wait for — everything it needs is already inside.</p>
+        </div>
+      </li>
+
+    </ol>
+  </section>
+
+  <section>
+    <h2>Converting a score</h2>
+    <p class="section-note">Three moves: drop it in, press Convert, open the result in MuseScore.</p>
+
+    <figure>
+      <svg viewBox="0 0 660 322" role="img" aria-label="Illustration: the Pdf2Score window, with add, engine switch and convert in the toolbar and a file queue below">
+        <rect x="20" y="16" width="620" height="290" rx="12" fill="var(--paper)" stroke="var(--rule)"></rect>
+        <rect x="20" y="16" width="620" height="48" rx="12" fill="var(--panel)"></rect>
+        <path d="M20 64 h620" stroke="var(--rule)"></path>
+        <g fill="var(--rule)">
+          <circle cx="42" cy="40" r="5.5"></circle>
+          <circle cx="61" cy="40" r="5.5"></circle>
+          <circle cx="80" cy="40" r="5.5"></circle>
+        </g>
+        <text x="104" y="45" font-family="var(--body)" font-size="14" font-weight="600" fill="var(--ink)">Pdf2Score</text>
+
+        <rect x="322" y="26" width="242" height="29" rx="9" fill="var(--paper)" stroke="var(--rule)"></rect>
+        <path d="M342 40.5 h13 M348.5 34 v13" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"></path>
+        <rect x="368" y="30" width="140" height="21" rx="6" fill="var(--panel)" stroke="var(--rule)"></rect>
+        <rect x="368" y="30" width="66" height="21" rx="6" fill="var(--accent)"></rect>
+        <text x="401" y="45" text-anchor="middle" font-family="var(--body)" font-size="12" font-weight="600" fill="var(--paper)">homr</text>
+        <text x="471" y="45" text-anchor="middle" font-family="var(--body)" font-size="12" fill="var(--muted)">Audiveris</text>
+        <path d="M530 33.5 l12 7 l-12 7 z" fill="var(--ink)"></path>
+
+        <rect x="576" y="26" width="48" height="29" rx="9" fill="var(--paper)" stroke="var(--rule)"></rect>
+        <text x="595" y="46" text-anchor="middle" font-family="var(--body)" font-size="15" fill="var(--muted)">···</text>
+        <path d="M609 38 l4 4 l4 -4" stroke="var(--muted)" stroke-width="1.5" fill="none" stroke-linecap="round"></path>
+
+        <circle cx="48" cy="96" r="8" fill="var(--accent)" opacity=".18"></circle>
+        <path d="M44 96 l3 3 l6 -7" stroke="var(--accent)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+        <text x="70" y="93" font-family="var(--body)" font-size="14" fill="var(--ink)">Moonlight Sonata.pdf</text>
+        <text x="70" y="110" font-family="var(--body)" font-size="12" fill="var(--muted)">Done</text>
+        <text x="612" y="101" text-anchor="end" font-family="var(--body)" font-size="12" fill="var(--muted)">homr</text>
+        <path d="M40 124 h572" stroke="var(--hairline)"></path>
+
+        <circle cx="48" cy="152" r="8" fill="var(--accent)" opacity=".18"></circle>
+        <path d="M43 152 q2.5 -6 5 0 t5 0" stroke="var(--accent)" stroke-width="1.8" fill="none" stroke-linecap="round"></path>
+        <text x="70" y="149" font-family="var(--body)" font-size="14" fill="var(--ink)">Etude Op.10.pdf</text>
+        <text x="70" y="166" font-family="var(--body)" font-size="12" fill="var(--muted)">Page 2 of 4</text>
+        <rect x="492" y="146" width="120" height="7" rx="3.5" fill="var(--hairline)"></rect>
+        <rect x="492" y="146" width="54" height="7" rx="3.5" fill="var(--accent)"></rect>
+        <path d="M40 180 h572" stroke="var(--hairline)"></path>
+
+        <circle cx="48" cy="208" r="8" fill="none" stroke="var(--rule)" stroke-width="1.5"></circle>
+        <path d="M48 204 v4 l3 2" stroke="var(--rule)" stroke-width="1.5" fill="none" stroke-linecap="round"></path>
+        <text x="70" y="205" font-family="var(--body)" font-size="14" fill="var(--ink)">Minuet.pdf</text>
+        <text x="70" y="222" font-family="var(--body)" font-size="12" fill="var(--muted)">Waiting</text>
+
+        <path d="M20 248 h620" stroke="var(--hairline)"></path>
+        <path d="M42 262 l5 5 l-5 5" stroke="var(--muted)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+        <text x="58" y="271" font-family="var(--body)" font-size="12" fill="var(--muted)">Processing log (Etude Op.10.pdf)</text>
+
+        <path d="M20 282 h620" stroke="var(--rule)"></path>
+        <text x="40" y="299" font-family="var(--body)" font-size="12" fill="var(--muted)">3 files · 1 done</text>
+        <text x="620" y="299" text-anchor="end" font-family="var(--body)" font-size="12" fill="var(--muted)">Saving next to each PDF</text>
+      </svg>
+      <figcaption>The main window. The engine switch sits in the middle of the toolbar; each row is one PDF, progress counts pages, and a finished row shows which engine produced it.</figcaption>
+    </figure>
+
+    <div class="cards" style="margin-top: 26px;">
+      <div class="card">
+        <h3>Drag PDFs into the window</h3>
+        <p>As many at once as you like, or <strong>a whole folder</strong> — it finds
+           every PDF inside. The Add PDFs button in the toolbar does the same thing.</p>
+      </div>
+      <div class="card">
+        <h3>Press Convert</h3>
+        <p>About 5 seconds per page on Apple Silicon (around 15 with Audiveris);
+           Intel Macs are slower again. You can press Stop at any time.
+           One file failing does not affect the others — that row turns red and the
+           rest carry on.</p>
+      </div>
+      <div class="card">
+        <h3>Open the result in MuseScore</h3>
+        <p>Each PDF produces an <code>.mxl</code> of the same name
+           <strong>in the folder the PDF came from</strong>. Double-click it to open
+           it in MuseScore, or right-click the row and choose Show in Finder.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Two recognition engines</h2>
+    <p class="section-note">When a result comes out badly, switch engines before you touch anything else — it helps more than any setting.</p>
+    <div class="cards">
+      <div class="card">
+        <h3>homr (default)</h3>
+        <p>A neural model. Copes better with <strong>photographs, skewed scans and
+           soft printing</strong>. A little faster.</p>
+      </div>
+      <div class="card">
+        <h3>Audiveris</h3>
+        <p>Classical structural analysis. Very steady on <strong>clean, regularly
+           engraved</strong> scores, and it reads multi-page pieces as one book itself.
+           A little slower.</p>
+      </div>
+      <div class="card">
+        <h3>How to switch</h3>
+        <p>The engine switch is in the toolbar, <strong>right next to Convert</strong>.
+           Pick one before converting.</p>
+        <p>For a file that has already been converted, <strong>right-click its row →
+           Re-recognise with …</strong>. That runs the same PDF through the other
+           engine and writes a second file, so you can compare them.</p>
+      </div>
+    </div>
+    <p style="margin-top: 18px;">Neither is always better. On the same score the two may differ by a bar or two,
+       or by a lot — compare them and decide which one to proofread.</p>
+  </section>
+
+  <section>
+    <h2>Everything needs proofreading</h2>
+    <p>Optical music recognition is never perfect. That is the state of the technology,
+       not a fault in this app. Cleanly printed scores usually come out well;
+       <strong>skewed scans, repeated photocopies, handwriting and dense piano
+       writing</strong> produce noticeably more wrong notes and rhythms.</p>
+    <p>Think of it as having typed most of the notes for you. Check it against the
+       original in MuseScore and fix what is wrong — still far faster than entering
+       the whole thing by hand.</p>
+  </section>
+
+  <section>
+    <h2>Settings</h2>
+    <p class="section-note">The defaults are fine; these are the ones you might want to change. Open them from Pdf2Score → Settings in the menu bar.</p>
+    <div class="cards">
+      <div class="card">
+        <h3>Location</h3>
+        <p>By default results land next to the source PDF. To collect everything in
+           one place, switch to “A folder I choose”.</p>
+      </div>
+      <div class="card">
+        <h3>Use the Apple GPU</h3>
+        <p>Only meaningful on Apple Silicon; leave it off on Intel. The first run has
+           to compile the model, so it pays off across many files rather than one.</p>
+      </div>
+      <div class="card">
+        <h3>Rendering resolution</h3>
+        <p>300 dpi by default. If a <strong>scan looks soft</strong>, 400 dpi may read
+           it better, at the cost of speed; 200 dpi is faster when you are in a hurry.</p>
+      </div>
+      <div class="card">
+        <h3>Merge multi-page PDFs</h3>
+        <p>On by default: one PDF, one file. If a page's part layout does not line up
+           with the others, it writes the pages out separately and flags the row rather
+           than forcing together a score that would be wrong.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>If something goes wrong</h2>
+
+    <details>
+      <summary>Double-clicking does nothing, or it says the app is damaged and should be moved to the Trash</summary>
+      <div class="answer">
+        <p>That is how macOS treats an app without a paid Apple certificate; the file
+           itself is fine. Follow install steps 2 and 3: <strong>right-click → Open</strong>,
+           or System Settings → Privacy &amp; Security → <strong>Open Anyway</strong>.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>The first conversion is very slow, or it sits on “Starting the recognition engine”</summary>
+      <div class="answer">
+        <p>On the first launch after installing, macOS checks every file inside the app.
+           This one bundles two complete recognition engines, so there are a lot of files
+           and that check <strong>can take several minutes</strong>. It only happens once.
+           “Starting the recognition engine…” in the queue means it is working, not stuck.</p>
+        <p>Leave the app open for a moment and it finishes this in the background;
+           conversions after that run at normal speed.</p>
+        <p>Normal speed is about 5 seconds per page (around 15 on Intel).</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>One file turned red and failed</summary>
+      <div class="answer">
+        <p>Click that row and the Processing log below it expands with the reason.
+           The two common ones:</p>
+        <p><strong>No noteheads found</strong> — the page may be a cover, a table of
+           contents or a lyrics page, or the scan may be too faint.
+           <strong>The whole file failed</strong> — check the PDF really is sheet music
+           and not a heavily compressed image scan.</p>
+        <p>Trying again at 400 dpi is worth a shot.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>A multi-page piece came out as several files</summary>
+      <div class="answer">
+        <p>When one page is recognised with a different number of parts than the others
+           (a page misread as two staves, say), forcing them together would produce a
+           garbled score, so the pages are written out separately and the row is flagged.</p>
+        <p>You can join them by hand in MuseScore, or change the resolution and try
+           again to see whether that page reads correctly.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>The result has a lot of errors</summary>
+      <div class="answer">
+        <p>Start with the quality of the PDF. A photograph or a low-resolution scan
+           makes a large difference — get a cleaner copy if you can. Skewed scans can be
+           straightened in Preview first.</p>
+        <p>If the original is already clean and the result is still poor, that score is
+           beyond what the current engines handle. Try the other engine before giving up.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>MuseScore will not open the .mxl</summary>
+      <div class="answer">
+        <p>Check you have MuseScore 4 (<a href="https://musescore.org/en/download">musescore.org</a>,
+           free). <code>.mxl</code> is the standard compressed MusicXML format, so
+           Sibelius, Finale and Dorico read it too.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Does converting upload my scores anywhere?</summary>
+      <div class="answer">
+        <p>No. The recognition models and both engines are inside the app; everything
+           happens on your machine and no network connection is needed at any point.</p>
+      </div>
+    </details>
+  </section>
+
+  <footer>
+    <p>The recognition engines are <a href="https://github.com/liebharc/homr">homr</a> and
+       <a href="https://github.com/Audiveris/audiveris">Audiveris</a>, both licensed AGPL-3.0;
+       this app is distributed under AGPL-3.0 as well, and its full source is at
+       <a href="https://github.com/wubj/Pdf2Score">github.com/wubj/Pdf2Score</a>.</p>
+    <p>The windows and menus on this page are drawn illustrations, not screenshots;
+       what you see will vary a little with your version of macOS.</p>
+  </footer>
+
+</div>
