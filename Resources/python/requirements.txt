@@ -1,0 +1,4 @@
+# Pinned: worker.py calls homr's internal API (homr.main.process_image,
+# homr.autocrop.autocrop), which changes between releases.
+homr==0.7.0
+pypdfium2>=4,<6

@@ -1,0 +1,11 @@
+# Build output — the runtimes, engines and disk images live here and are
+# rebuilt by `make`. Nothing in this directory belongs in version control.
+build/
+.build/
+
+# Generated: `make icon` redraws it from Tools/make_icon.py
+Resources/AppIcon.icns
+
+__pycache__/
+*.pyc
+.DS_Store

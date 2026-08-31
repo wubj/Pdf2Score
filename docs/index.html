@@ -1,0 +1,866 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Pdf2Score 的安裝與使用說明：把 PDF 樂譜轉成 MuseScore 打得開的檔案。">
+<title>Pdf2Score 使用指南</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+
+<style>
+  :root {
+    --paper:    #FAF9F7;
+    --panel:    #F1EEE9;
+    --ink:      #1A1B20;
+    --muted:    #6E6762;
+    --rule:     #C7C3BD;
+    --hairline: #E3DFD8;
+    --accent:   #A8232F;
+    --accent-wash: #F6E9E8;
+    --shadow:   rgba(26, 27, 32, .09);
+
+    --display: "Fraunces", "Noto Serif TC", Georgia, serif;
+    --body: "Source Sans 3", "Noto Sans TC", -apple-system, system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:    #15161A;
+      --panel:    #1E2026;
+      --ink:      #E9E6E1;
+      --muted:    #9B938C;
+      --rule:     #43454D;
+      --hairline: #2A2C33;
+      --accent:   #EC7C86;
+      --accent-wash: #2C1E20;
+      --shadow:   rgba(0, 0, 0, .45);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:    #15161A;
+    --panel:    #1E2026;
+    --ink:      #E9E6E1;
+    --muted:    #9B938C;
+    --rule:     #43454D;
+    --hairline: #2A2C33;
+    --accent:   #EC7C86;
+    --accent-wash: #2C1E20;
+    --shadow:   rgba(0, 0, 0, .45);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.7;
+    margin: 0;
+    padding: 0 24px 96px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    padding: 72px 0 44px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .badge img {
+    width: 76px;
+    height: 76px;
+    border-radius: 17px;
+    box-shadow: 0 6px 20px var(--shadow);
+  }
+
+  .badge h1 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 2.4rem;
+    line-height: 1.1;
+    letter-spacing: -.01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .badge .kicker {
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 6px;
+  }
+
+  .standfirst {
+    font-size: 1.16rem;
+    color: var(--muted);
+    margin: 0;
+    max-width: 60ch;
+  }
+
+  /* the five-line stave that separates the masthead from the body */
+  .stave {
+    display: block;
+    width: 100%;
+    height: 30px;
+    margin: 8px 0 0;
+  }
+
+  /* ---------- structure ---------- */
+
+  section {
+    padding-top: 52px;
+  }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.62rem;
+    line-height: 1.25;
+    margin: 0 0 6px;
+    text-wrap: balance;
+  }
+
+  .section-note {
+    color: var(--muted);
+    margin: 0 0 28px;
+  }
+
+  h3 {
+    font-family: var(--body);
+    font-weight: 600;
+    font-size: 1.02rem;
+    margin: 0 0 4px;
+  }
+
+  p { margin: 0 0 16px; }
+  p:last-child { margin-bottom: 0; }
+
+  a {
+    color: var(--accent);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  a:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  code {
+    font-family: var(--mono);
+    font-size: .86em;
+    background: var(--panel);
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+
+  strong { font-weight: 600; }
+
+  /* ---------- requirements ---------- */
+
+  .specs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 0;
+  }
+
+  .spec {
+    background: var(--panel);
+    border: 1px solid var(--hairline);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+
+  .spec dt {
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+
+  .spec dd {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.02rem;
+  }
+
+  .spec dd span {
+    display: block;
+    font-weight: 400;
+    font-size: .87rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-top: 2px;
+  }
+
+  /* ---------- downloads ---------- */
+
+  .downloads {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+
+  .download {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 18px 20px;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    background: var(--panel);
+    text-decoration: none;
+    color: var(--ink);
+    transition: border-color .15s ease, background .15s ease;
+  }
+
+  .download:hover,
+  .download:focus-visible {
+    border-color: var(--accent);
+    background: var(--accent-wash);
+  }
+
+  .download .machine {
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .download .file {
+    font-weight: 600;
+    font-size: 1.02rem;
+    color: var(--accent);
+    word-break: break-all;
+  }
+
+  .download .size {
+    font-size: .85rem;
+    color: var(--muted);
+  }
+
+  /* ---------- numbered install steps (bar numbers) ---------- */
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    gap: 22px;
+    padding: 26px 0;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .step:first-child { border-top: none; padding-top: 6px; }
+
+  .bar-number {
+    font-family: var(--mono);
+    font-size: .84rem;
+    font-weight: 500;
+    color: var(--accent);
+    border-left: 2px solid var(--accent);
+    padding-left: 9px;
+    height: fit-content;
+    line-height: 1.5;
+  }
+
+  .step-body > * + * { margin-top: 14px; }
+
+  /* ---------- figures ---------- */
+
+  figure {
+    margin: 0;
+    border: 1px solid var(--hairline);
+    border-radius: 10px;
+    background: var(--panel);
+    overflow: hidden;
+  }
+
+  figure svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  figcaption {
+    font-size: .84rem;
+    color: var(--muted);
+    padding: 10px 16px 12px;
+    border-top: 1px solid var(--hairline);
+    background: var(--paper);
+  }
+
+  /* ---------- callouts ---------- */
+
+  .note {
+    border-left: 3px solid var(--rule);
+    padding: 2px 0 2px 18px;
+    color: var(--muted);
+    font-size: .95rem;
+  }
+
+  .note strong { color: var(--ink); }
+
+  .alert {
+    border-left-color: var(--accent);
+    background: var(--accent-wash);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 18px;
+    color: var(--ink);
+  }
+
+  /* ---------- usage cards ---------- */
+
+  .cards {
+    display: grid;
+    gap: 18px;
+  }
+
+  .card {
+    border: 1px solid var(--hairline);
+    border-radius: 10px;
+    padding: 20px 22px;
+    background: var(--panel);
+  }
+
+  .card p {
+    color: var(--muted);
+    font-size: .95rem;
+    margin: 6px 0 0;
+  }
+
+  .card p strong { color: var(--ink); }
+
+  /* ---------- faq ---------- */
+
+  details {
+    border-top: 1px solid var(--hairline);
+    padding: 4px 0;
+  }
+
+  details:last-of-type { border-bottom: 1px solid var(--hairline); }
+
+  summary {
+    cursor: pointer;
+    padding: 14px 0;
+    font-weight: 600;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  summary::-webkit-details-marker { display: none; }
+
+  summary::after {
+    content: "+";
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 1.1rem;
+    flex: none;
+  }
+
+  details[open] summary::after { content: "\2212"; }
+
+  details .answer {
+    padding: 0 0 18px;
+    color: var(--muted);
+    font-size: .96rem;
+  }
+
+  details .answer p { margin-bottom: 12px; }
+
+  /* ---------- colophon ---------- */
+
+  footer {
+    margin-top: 64px;
+    padding-top: 22px;
+    border-top: 1px solid var(--hairline);
+    font-size: .84rem;
+    color: var(--muted);
+  }
+
+  footer p { margin-bottom: 8px; }
+
+  @media (max-width: 560px) {
+    body { font-size: 16px; padding: 0 18px 72px; }
+    .masthead { padding-top: 48px; }
+    .badge { gap: 14px; }
+    .badge img { width: 60px; height: 60px; }
+    .badge h1 { font-size: 1.9rem; }
+    .step { grid-template-columns: 38px 1fr; gap: 14px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="badge">
+      <img src="data:image/png;base64,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" alt="Pdf2Score 的 App 圖示：藍底白紙上的一個四分音符">
+      <div>
+        <p class="kicker">安裝與使用</p>
+        <h1>Pdf2Score</h1>
+      </div>
+    </div>
+    <p class="standfirst">
+      把 PDF 樂譜轉成 MuseScore 打得開的檔案。整份 PDF 拖進去，
+      每一頁自動辨識，多頁的曲子會接成一份完整的譜。
+    </p>
+    <svg class="stave" viewBox="0 0 700 30" preserveAspectRatio="none" aria-hidden="true">
+      <g stroke-width="1" style="stroke: var(--rule)">
+        <line x1="0" y1="3"  x2="700" y2="3"></line>
+        <line x1="0" y1="9"  x2="700" y2="9"></line>
+        <line x1="0" y1="15" x2="700" y2="15"></line>
+        <line x1="0" y1="21" x2="700" y2="21"></line>
+        <line x1="0" y1="27" x2="700" y2="27"></line>
+      </g>
+      <rect x="0" y="3" width="2.5" height="24" style="fill: var(--accent)"></rect>
+    </svg>
+  </header>
+
+  <section>
+    <h2>開始之前</h2>
+    <p class="section-note">四件事確認一下，都符合就可以往下走。</p>
+    <dl class="specs">
+      <div class="spec">
+        <dt>Mac 機型</dt>
+        <dd>兩種都支援
+          <span>Apple Silicon 與 Intel 各有一份安裝檔，<strong>拿錯的那份打不開</strong>。
+                蘋果選單 →「關於這台 Mac」看晶片那一欄。</span>
+        </dd>
+      </div>
+      <div class="spec">
+        <dt>系統版本</dt>
+        <dd>macOS 14 以上
+          <span>同一個視窗就看得到，寫 Sonoma、Sequoia、Tahoe 都可以。</span>
+        </dd>
+      </div>
+      <div class="spec">
+        <dt>還要裝什麼</dt>
+        <dd>MuseScore
+          <span>轉出來的譜要用它打開、校對。<a href="https://musescore.org/zh-hant/download">免費下載</a>。</span>
+        </dd>
+      </div>
+      <div class="spec">
+        <dt>網路</dt>
+        <dd>不需要
+          <span>辨識全部在你的電腦上跑，樂譜不會上傳到任何地方。</span>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section>
+    <h2>下載</h2>
+    <p class="section-note">
+      兩份安裝檔對應不同機型，<strong>拿錯的那份打不開</strong>。
+      蘋果選單 →「關於這台 Mac」，看「晶片」或「處理器」那一欄是哪一種。
+    </p>
+    <div class="downloads">
+      <a class="download" href="https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-AppleSilicon.dmg" target="_blank" rel="noopener">
+        <span class="machine">Apple M1 / M2 / M3⋯</span>
+        <span class="file">Pdf2Score-AppleSilicon.dmg</span>
+        <span class="size">274 MB</span>
+      </a>
+      <a class="download" href="https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-Intel.dmg" target="_blank" rel="noopener">
+        <span class="machine">Intel</span>
+        <span class="file">Pdf2Score-Intel.dmg</span>
+        <span class="size">314 MB</span>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>安裝</h2>
+    <p class="section-note">
+      第 3 步的警告是正常的，不是檔案有問題——這個 App 沒有向 Apple 付費買憑證，
+      所以系統預設會先擋一次。只需要做這一次。
+    </p>
+
+    <ol class="steps">
+
+      <li class="step">
+        <div class="bar-number">1</div>
+        <div class="step-body">
+          <h3>打開下載好的 .dmg</h3>
+          <p>到「下載項目」雙擊剛才下載的檔案，會跳出一個視窗。
+             把左邊的 <strong>Pdf2Score</strong> 拖到右邊的 <strong>應用程式</strong> 上放開。</p>
+          <figure>
+            <svg viewBox="0 0 660 260" role="img" aria-label="示意圖：磁碟映像檔視窗中，把 Pdf2Score 圖示拖到應用程式資料夾">
+              <rect x="30" y="20" width="600" height="220" rx="12" style="fill: var(--paper); stroke: var(--rule)"></rect>
+              <rect x="30" y="20" width="600" height="34" rx="12" style="fill: var(--panel); stroke: var(--rule)"></rect>
+              <path d="M30 54 h600" style="stroke: var(--rule)"></path>
+              <g style="fill: var(--rule)">
+                <circle cx="52" cy="37" r="5"></circle>
+                <circle cx="70" cy="37" r="5"></circle>
+                <circle cx="88" cy="37" r="5"></circle>
+              </g>
+              <text x="330" y="42" text-anchor="middle" font-size="14" style="font-family: var(--body); fill: var(--muted)">Pdf2Score</text>
+
+              <!-- app icon -->
+              <rect x="140" y="96" width="76" height="76" rx="17" opacity=".12" style="fill: var(--accent)"></rect>
+              <rect x="140" y="96" width="76" height="76" rx="17" fill="none" stroke-width="1.5" style="stroke: var(--accent)"></rect>
+              <ellipse cx="172" cy="146" rx="15" ry="11" style="fill: var(--accent)"></ellipse>
+              <path d="M186 146 V112" stroke-width="4" stroke-linecap="round" style="stroke: var(--accent)"></path>
+              <text x="178" y="198" text-anchor="middle" font-size="14" style="font-family: var(--body); fill: var(--ink)">Pdf2Score</text>
+
+              <!-- arrow -->
+              <path d="M258 134 h124" stroke-width="2.5" stroke-dasharray="7 6" stroke-linecap="round" style="stroke: var(--accent)"></path>
+              <path d="M382 134 l-13 -8 v16 z" style="fill: var(--accent)"></path>
+
+              <!-- applications folder -->
+              <path d="M420 104 h30 l9 12 h37 a8 8 0 0 1 8 8 v40 a8 8 0 0 1 -8 8 h-76 a8 8 0 0 1 -8 -8 v-52 a8 8 0 0 1 8 -8 z" stroke-width="1.5" style="fill: var(--panel); stroke: var(--rule)"></path>
+              <text x="466" y="198" text-anchor="middle" font-size="14" style="font-family: var(--body); fill: var(--ink)">應用程式</text>
+            </svg>
+            <figcaption>拖曳安裝。放開後就複製完成了，可以把這個視窗關掉。</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li class="step">
+        <div class="bar-number">2</div>
+        <div class="step-body">
+          <h3>到「應用程式」裡，右鍵打開它</h3>
+          <p>這一步<strong>不要用雙擊</strong>。在 Pdf2Score 上按<strong>右鍵</strong>
+             （或按住 Control 再點一下），選單裡選<strong>「打開」</strong>。</p>
+          <figure>
+            <svg viewBox="0 0 660 250" role="img" aria-label="示意圖：在 App 圖示上按右鍵，選單中的「打開」被標示出來">
+              <rect x="60" y="34" width="76" height="76" rx="17" opacity=".12" style="fill: var(--accent)"></rect>
+              <rect x="60" y="34" width="76" height="76" rx="17" fill="none" stroke-width="1.5" style="stroke: var(--accent)"></rect>
+              <ellipse cx="92" cy="84" rx="15" ry="11" style="fill: var(--accent)"></ellipse>
+              <path d="M106 84 V50" stroke-width="4" stroke-linecap="round" style="stroke: var(--accent)"></path>
+              <text x="98" y="136" text-anchor="middle" font-size="14" style="font-family: var(--body); fill: var(--ink)">Pdf2Score</text>
+
+              <!-- cursor -->
+              <path d="M118 92 l0 26 l6 -6 l5 11 l5 -2 l-5 -11 l8 0 z" stroke-width="1.5" style="fill: var(--ink); stroke: var(--paper)"></path>
+
+              <!-- context menu -->
+              <rect x="150" y="96" width="210" height="132" rx="9" style="fill: var(--paper); stroke: var(--rule)"></rect>
+              <rect x="156" y="104" width="198" height="26" rx="6" style="fill: var(--accent)"></rect>
+              <text x="170" y="122" font-size="14" font-weight="600" style="font-family: var(--body); fill: var(--paper)">打開</text>
+              <text x="170" y="152" font-size="14" style="font-family: var(--body); fill: var(--muted)">打開檔案的應用程式</text>
+              <path d="M156 166 h198" style="stroke: var(--hairline)"></path>
+              <text x="170" y="188" font-size="14" style="font-family: var(--body); fill: var(--muted)">取得資訊</text>
+              <text x="170" y="214" font-size="14" style="font-family: var(--body); fill: var(--muted)">移到垃圾桶</text>
+
+              <!-- annotation -->
+              <path d="M392 118 h-24" stroke-width="2" stroke-linecap="round" style="stroke: var(--accent)"></path>
+              <path d="M368 118 l13 -7 v14 z" style="fill: var(--accent)"></path>
+              <text x="402" y="115" font-size="14" font-weight="600" style="font-family: var(--body); fill: var(--accent)">選這個</text>
+              <text x="402" y="136" font-size="13" style="font-family: var(--body); fill: var(--muted)">雙擊會直接被擋掉</text>
+            </svg>
+            <figcaption>只有第一次需要這樣做，之後雙擊就能開。</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li class="step">
+        <div class="bar-number">3</div>
+        <div class="step-body">
+          <h3>在警告視窗按「打開」</h3>
+          <p>會跳出「Apple 無法驗證⋯⋯是否含有惡意軟體」之類的訊息。按<strong>「打開」</strong>就好。</p>
+          <div class="note alert">
+            <p><strong>如果視窗上只有「移到垃圾桶」和「取消」，沒有「打開」：</strong></p>
+            <p>先按取消，然後打開<strong>「系統設定」→「隱私權與安全性」</strong>，
+               往下捲到最底，會看到一行寫著已封鎖 Pdf2Score，按旁邊的<strong>「仍要打開」</strong>，
+               再輸入一次電腦密碼。</p>
+          </div>
+          <figure>
+            <svg viewBox="0 0 660 210" role="img" aria-label="示意圖：系統設定的隱私權與安全性頁面，最下方有「仍要打開」按鈕">
+              <rect x="30" y="18" width="600" height="174" rx="12" style="fill: var(--paper); stroke: var(--rule)"></rect>
+              <rect x="30" y="18" width="196" height="174" rx="12" style="fill: var(--panel)"></rect>
+              <path d="M226 18 v174" style="stroke: var(--rule)"></path>
+              <text x="54" y="50" font-size="14" style="font-family: var(--body); fill: var(--muted)">系統設定</text>
+              <rect x="46" y="66" width="160" height="26" rx="6" opacity=".14" style="fill: var(--accent)"></rect>
+              <text x="60" y="84" font-size="14" font-weight="600" style="font-family: var(--body); fill: var(--accent)">隱私權與安全性</text>
+              <text x="60" y="116" font-size="14" style="font-family: var(--body); fill: var(--muted)">外觀</text>
+              <text x="60" y="144" font-size="14" style="font-family: var(--body); fill: var(--muted)">聲音</text>
+
+              <text x="252" y="52" font-size="14" font-weight="600" style="font-family: var(--body); fill: var(--ink)">安全性</text>
+              <path d="M252 66 h354" style="stroke: var(--hairline)"></path>
+              <text x="252" y="94" font-size="13.5" style="font-family: var(--body); fill: var(--muted)">允許以下來源下載的應用程式</text>
+              <rect x="252" y="118" width="354" height="52" rx="8" stroke-width="1.5" style="fill: var(--accent-wash); stroke: var(--accent)"></rect>
+              <text x="268" y="142" font-size="13.5" style="font-family: var(--body); fill: var(--ink)">已封鎖 “Pdf2Score”，因為它並非來自</text>
+              <text x="268" y="160" font-size="13.5" style="font-family: var(--body); fill: var(--ink)">已識別的開發者。</text>
+              <rect x="496" y="132" width="94" height="27" rx="7" style="fill: var(--accent)"></rect>
+              <text x="543" y="150" text-anchor="middle" font-size="13.5" font-weight="600" style="font-family: var(--body); fill: var(--paper)">仍要打開</text>
+            </svg>
+            <figcaption>系統設定裡的那一行只會在你嘗試開啟後才出現，位置在頁面最下方。</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li class="step">
+        <div class="bar-number">4</div>
+        <div class="step-body">
+          <h3>裝好了</h3>
+          <p>App 開起來就是一個空白視窗，等你把 PDF 丟進去。不用做任何設定，
+             不用登入，也不用等下載——需要的東西都已經包在裡面了。</p>
+        </div>
+      </li>
+
+    </ol>
+  </section>
+
+  <section>
+    <h2>轉一份譜</h2>
+    <p class="section-note">三個動作：丟進去、按開始、用 MuseScore 打開。</p>
+
+    <figure>
+      <svg viewBox="0 0 660 322" role="img" aria-label="示意圖：Pdf2Score 主視窗，工具列上有加入、引擎切換與開始轉換，中間是檔案清單與進度">
+        <rect x="20" y="16" width="620" height="290" rx="12" style="fill: var(--paper); stroke: var(--rule)"></rect>
+        <rect x="20" y="16" width="620" height="48" rx="12" style="fill: var(--panel)"></rect>
+        <path d="M20 64 h620" style="stroke: var(--rule)"></path>
+        <g style="fill: var(--rule)">
+          <circle cx="42" cy="40" r="5.5"></circle>
+          <circle cx="61" cy="40" r="5.5"></circle>
+          <circle cx="80" cy="40" r="5.5"></circle>
+        </g>
+        <text x="104" y="45" font-size="14" font-weight="600" style="font-family: var(--body); fill: var(--ink)">Pdf2Score</text>
+
+        <!-- toolbar: add, engine switch, convert -->
+        <rect x="322" y="26" width="242" height="29" rx="9" style="fill: var(--paper); stroke: var(--rule)"></rect>
+        <path d="M342 40.5 h13 M348.5 34 v13" stroke-width="1.8" stroke-linecap="round" style="stroke: var(--ink)"></path>
+        <rect x="368" y="30" width="140" height="21" rx="6" style="fill: var(--panel); stroke: var(--rule)"></rect>
+        <rect x="368" y="30" width="66" height="21" rx="6" style="fill: var(--accent)"></rect>
+        <text x="401" y="45" text-anchor="middle" font-size="12" font-weight="600" style="font-family: var(--body); fill: var(--paper)">homr</text>
+        <text x="471" y="45" text-anchor="middle" font-size="12" style="font-family: var(--body); fill: var(--muted)">Audiveris</text>
+        <path d="M530 33.5 l12 7 l-12 7 z" style="fill: var(--ink)"></path>
+
+        <rect x="576" y="26" width="48" height="29" rx="9" style="fill: var(--paper); stroke: var(--rule)"></rect>
+        <text x="595" y="46" text-anchor="middle" font-size="15" style="font-family: var(--body); fill: var(--muted)">···</text>
+        <path d="M609 38 l4 4 l4 -4" stroke-width="1.5" fill="none" stroke-linecap="round" style="stroke: var(--muted)"></path>
+
+        <!-- row 1: finished, shows which engine produced it -->
+        <circle cx="48" cy="96" r="8" opacity=".18" style="fill: var(--accent)"></circle>
+        <path d="M44 96 l3 3 l6 -7" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--accent)"></path>
+        <text x="70" y="93" font-size="14" style="font-family: var(--body); fill: var(--ink)">月光奏鳴曲.pdf</text>
+        <text x="70" y="110" font-size="12" style="font-family: var(--body); fill: var(--muted)">完成</text>
+        <text x="612" y="101" text-anchor="end" font-size="12" style="font-family: var(--body); fill: var(--muted)">homr</text>
+        <path d="M40 124 h572" style="stroke: var(--hairline)"></path>
+
+        <!-- row 2: running, per-page progress -->
+        <circle cx="48" cy="152" r="8" opacity=".18" style="fill: var(--accent)"></circle>
+        <path d="M43 152 q2.5 -6 5 0 t5 0" stroke-width="1.8" fill="none" stroke-linecap="round" style="stroke: var(--accent)"></path>
+        <text x="70" y="149" font-size="14" style="font-family: var(--body); fill: var(--ink)">練習曲 Op.10.pdf</text>
+        <text x="70" y="166" font-size="12" style="font-family: var(--body); fill: var(--muted)">辨識第 2 / 4 頁</text>
+        <rect x="492" y="146" width="120" height="7" rx="3.5" style="fill: var(--hairline)"></rect>
+        <rect x="492" y="146" width="54" height="7" rx="3.5" style="fill: var(--accent)"></rect>
+        <path d="M40 180 h572" style="stroke: var(--hairline)"></path>
+
+        <!-- row 3: waiting -->
+        <circle cx="48" cy="208" r="8" fill="none" stroke-width="1.5" style="stroke: var(--rule)"></circle>
+        <path d="M48 204 v4 l3 2" stroke-width="1.5" fill="none" stroke-linecap="round" style="stroke: var(--rule)"></path>
+        <text x="70" y="205" font-size="14" style="font-family: var(--body); fill: var(--ink)">小步舞曲.pdf</text>
+        <text x="70" y="222" font-size="12" style="font-family: var(--body); fill: var(--muted)">等待中</text>
+
+        <!-- collapsible log -->
+        <path d="M20 248 h620" style="stroke: var(--hairline)"></path>
+        <path d="M42 262 l5 5 l-5 5" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--muted)"></path>
+        <text x="58" y="271" font-size="12" style="font-family: var(--body); fill: var(--muted)">處理紀錄（練習曲 Op.10.pdf）</text>
+
+        <!-- status bar -->
+        <path d="M20 282 h620" style="stroke: var(--rule)"></path>
+        <text x="40" y="299" font-size="12" style="font-family: var(--body); fill: var(--muted)">共 3 個檔案・完成 1</text>
+        <text x="620" y="299" text-anchor="end" font-size="12" style="font-family: var(--body); fill: var(--muted)">輸出到 PDF 所在資料夾</text>
+      </svg>
+      <figcaption>主視窗。工具列中間就是辨識引擎切換鈕，每一列是一份 PDF，進度按頁計算，完成後右側顯示是哪個引擎轉的。</figcaption>
+    </figure>
+
+    <div class="cards" style="margin-top: 26px;">
+      <div class="card">
+        <h3>把 PDF 拖進視窗</h3>
+        <p>一次拖幾個都可以，拖<strong>整個資料夾</strong>也行——它會自動找出裡面所有的 PDF。
+           也可以按工具列的「加入 PDF」用選的。</p>
+      </div>
+      <div class="card">
+        <h3>按「開始轉換」</h3>
+        <p>Apple Silicon 一頁大約 5 秒（Audiveris 引擎約 15 秒），Intel 機型會再慢一些。
+           跑的時候可以隨時按「停止」。
+           某一份檔案失敗不會影響其他份，那一列會標成紅色，其餘照常跑完。</p>
+      </div>
+      <div class="card">
+        <h3>用 MuseScore 打開結果</h3>
+        <p>每份 PDF 會在<strong>它原本所在的資料夾</strong>產生一個同名的
+           <code>.mxl</code> 檔。雙擊就會用 MuseScore 開啟。
+           在那一列按右鍵可以選「在 Finder 中顯示」。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>兩個辨識引擎</h2>
+    <p class="section-note">轉出來不理想時，先換引擎再試——這比調任何設定都有效。</p>
+    <div class="cards">
+      <div class="card">
+        <h3>homr（預設）</h3>
+        <p>用 AI 模型辨識，對<strong>拍照、掃描歪斜、印刷較模糊</strong>的譜比較有辦法。
+           速度快一些。</p>
+      </div>
+      <div class="card">
+        <h3>Audiveris</h3>
+        <p>傳統的樂譜結構分析，對<strong>印刷乾淨、排版規整</strong>的譜很穩，
+           多頁的曲子由它自己整份處理。慢一些。</p>
+      </div>
+      <div class="card">
+        <h3>怎麼換</h3>
+        <p>視窗<strong>右上角「開始轉換」旁邊</strong>就是引擎切換鈕，轉換前直接選。</p>
+        <p>已經轉完的檔案，在清單上那一列<strong>按右鍵 →「改用 ⋯ 重新辨識」</strong>，
+           會用另一個引擎重跑同一份 PDF、另外產生一個檔案，兩份可以直接比較。</p>
+      </div>
+    </div>
+    <p style="margin-top: 18px;">沒有哪一個永遠比較好。同一份譜兩個引擎的結果可能差一兩個小節，
+       也可能差很多——實際比過再決定用哪一份去校對。</p>
+  </section>
+
+  <section>
+    <h2>轉出來一定要校對</h2>
+    <p>樂譜辨識沒辦法百分之百正確，這是這類技術的現況，不是這個 App 的問題。
+       印刷清晰的譜通常相當準；<strong>掃描歪斜、影印很多次、手寫譜、聲部複雜的鋼琴譜</strong>，
+       錯音和節奏錯誤會明顯變多。</p>
+    <p>把它想成「幫你把音符大致打好了」，你在 MuseScore 裡對著原譜檢查一遍、改掉錯的地方——
+       這樣還是比整份重新輸入快非常多。</p>
+  </section>
+
+  <section>
+    <h2>設定</h2>
+    <p class="section-note">預設值就很好用，這裡只列出可能會想改的。從選單列的 Pdf2Score → 設定⋯ 打開。</p>
+    <div class="cards">
+      <div class="card">
+        <h3>存放位置</h3>
+        <p>預設放在來源 PDF 旁邊。想把所有結果集中在一個資料夾，改成「指定資料夾」。</p>
+      </div>
+      <div class="card">
+        <h3>用 Apple GPU 加速</h3>
+        <p>只有 Apple Silicon 機型有意義，Intel 機型維持關閉即可。
+           開啟後第一次要花時間編譯模型，檔案數量多的時候才划算。</p>
+      </div>
+      <div class="card">
+        <h3>算圖解析度</h3>
+        <p>預設 300 dpi。<strong>掃描件看起來糊糊的</strong>可以改 400 dpi（比較慢，但可能認得比較準）；
+           趕時間可以用 200 dpi。</p>
+      </div>
+      <div class="card">
+        <h3>把多頁 PDF 合併成單一檔案</h3>
+        <p>預設開啟，一份 PDF 出一個檔。如果某一頁的聲部結構跟其他頁對不起來，
+           它會自動改成一頁一個檔並在清單上標示，不會硬接出一份錯的譜。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>遇到問題</h2>
+
+    <details>
+      <summary>雙擊沒反應，或說「已損毀，應該移到垃圾桶」</summary>
+      <div class="answer">
+        <p>這是 macOS 對沒有 Apple 憑證的 App 的預設反應，檔案本身沒壞。
+           照安裝的第 2、3 步做一次：<strong>右鍵 →「打開」</strong>，
+           或到「系統設定 →「隱私權與安全性」按「仍要打開」。</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>第一次轉檔特別慢，或一直停在「啟動辨識引擎」</summary>
+      <div class="answer">
+        <p>安裝後第一次啟動，macOS 會把 App 裡的每個檔案檢查一遍。App 內建了兩套完整的
+           辨識引擎，檔案很多，所以這一次<strong>可能要好幾分鐘</strong>，之後就不會再發生了。
+           清單上顯示「啟動辨識引擎…」就表示它正在做這件事，不是當掉了。</p>
+        <p>開著 App 不動它一下下，它會自己在背景把這件事做完，之後轉檔就都是正常速度。</p>
+        <p>之後每次轉檔，一頁大約 5 秒（Intel 機型約 15 秒）。</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>某一份檔案標成紅色、失敗了</summary>
+      <div class="answer">
+        <p>點那一列，下面的「處理紀錄」會展開，寫著失敗原因。最常見的兩種：</p>
+        <p><strong>找不到任何音符</strong>——這一頁可能是封面、目次、歌詞頁，或者掃描太淡。
+           <strong>整份都失敗</strong>——確認這份 PDF 真的是樂譜，而不是掃描成純圖片後又被壓縮得太模糊的版本。</p>
+        <p>可以試著把解析度調到 400 dpi 再跑一次。</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>多頁的曲子被拆成好幾個檔案</summary>
+      <div class="answer">
+        <p>當某一頁辨識出來的聲部數量跟其他頁不一樣時（例如某頁被誤判成兩行譜表），
+           硬接起來會產生一份錯亂的譜，所以它選擇分開輸出，並在那一列標上警告。</p>
+        <p>你可以在 MuseScore 裡手動接起來，或者調整解析度重跑看看那一頁能不能認對。</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>轉出來的譜錯很多</summary>
+      <div class="answer">
+        <p>先看原始 PDF 的品質。如果是拍照或低解析度掃描，先想辦法拿到更清楚的版本，
+           效果差很多。歪斜的掃描件也可以先用預覽程式轉正再丟進來。</p>
+        <p>如果原檔已經很清楚但結果還是不好，那就是這份譜的複雜度超出目前辨識引擎的能力了。</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>MuseScore 打不開 .mxl 檔</summary>
+      <div class="answer">
+        <p>確認裝的是 MuseScore 4（<a href="https://musescore.org/zh-hant/download">musescore.org</a> 免費下載）。
+           <code>.mxl</code> 是 MusicXML 的標準壓縮格式，Sibelius、Finale、Dorico 也都讀得懂。</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>轉檔會不會把我的樂譜上傳到網路上</summary>
+      <div class="answer">
+        <p>不會。辨識模型跟程式都在 App 裡面，整個過程在你的電腦上完成，全程不需要網路。</p>
+      </div>
+    </details>
+  </section>
+
+  <footer>
+    <p>辨識引擎是 <a href="https://github.com/liebharc/homr">homr</a>，依 AGPL-3.0 授權；
+       本 App 同樣依 AGPL-3.0 散布，原始碼可向提供這個檔案的人索取。</p>
+    <p>本頁的視窗與選單為示意插圖，非實際螢幕擷圖；實際畫面會隨你的 macOS 版本略有不同。</p>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# Intel Mac build.
+#
+# onnxruntime stopped shipping macOS x86_64 wheels after 1.23.2, but homr 0.7.0
+# pins ">= 1.24.1". homr only calls onnxruntime APIs that have been stable for
+# years (InferenceSession, OrtValue.ortvalue_from_numpy, set_default_logger_
+# severity, preload_dlls), so the Intel build installs homr with --no-deps and
+# pins the last release that has an Intel wheel.
+#
+# homr itself is installed separately by Tools/build_runtime.sh.
+onnxruntime==1.23.2
+# homr 0.7.0 still depends on this; --no-deps means we must name it ourselves.
+musicxml==1.4
+pypdfium2>=4,<6
+numpy>=2.4.2,<3
+opencv-python-headless>=4.13.0.92,<5
+Pillow>=12.1.1,<13
+types-Pillow>=10.2.0.20240822,<11
+typing_extensions>=4.15.0,<5
+rapidocr>=3.7.0,<4
+requests>=2.32.5,<3
