@@ -14,8 +14,8 @@ entirely on your Mac — no account, no network, nothing uploaded.
 
 | Your Mac | File |
 |---|---|
-| Apple Silicon (M1 and later) | [Pdf2Score-AppleSilicon.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-AppleSilicon.dmg) — 279 MB |
-| Intel | [Pdf2Score-Intel.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-Intel.dmg) — 313 MB |
+| Apple Silicon (M1 and later) | [Pdf2Score-AppleSilicon.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-AppleSilicon.dmg) — about 280 MB |
+| Intel | [Pdf2Score-Intel.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-Intel.dmg) — about 310 MB |
 
 Requires **macOS 14 or later**. Apple menu → About This Mac tells you which
 chip you have; the wrong build will not open.
@@ -105,8 +105,8 @@ component and its license.
 
 | 你的 Mac | 檔案 |
 |---|---|
-| Apple Silicon（M1 以後） | [Pdf2Score-AppleSilicon.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-AppleSilicon.dmg) — 279 MB |
-| Intel | [Pdf2Score-Intel.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-Intel.dmg) — 313 MB |
+| Apple Silicon（M1 以後） | [Pdf2Score-AppleSilicon.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-AppleSilicon.dmg) — 約 280 MB |
+| Intel | [Pdf2Score-Intel.dmg](https://github.com/wubj/Pdf2Score/releases/latest/download/Pdf2Score-Intel.dmg) — 約 310 MB |
 
 需要 **macOS 14 以上**。蘋果選單 →「關於這台 Mac」可以看到晶片是哪一種，
 **拿錯的那份打不開**。
