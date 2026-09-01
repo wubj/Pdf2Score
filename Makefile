@@ -18,7 +18,12 @@ DMG     := build/$(APP)-$(LABEL).dmg
 BINDIR   = $(shell swift build -c $(CONFIG) --arch $(ARCH) --show-bin-path)
 VENV     = $$HOME/Library/Application Support/Pdf2Score/venv/bin/python
 
-.PHONY: help app dmg dmg-all run icon guide runtime audiveris install clean test
+# A Python that has Pillow: the built runtime if one exists, otherwise the
+# installed app's venv. Used by the icon and share-image targets.
+PY_PILLOW = PY="build/runtime-arm64/python/bin/python3"; \
+	    if [ ! -x "$$PY" ]; then PY="$(VENV)"; fi
+
+.PHONY: help app dmg dmg-all run icon share guide runtime audiveris install clean test
 
 help:
 	@echo "make app                 # .app for this Mac's architecture"
@@ -28,6 +33,7 @@ help:
 	@echo "make test [ARCH=...]     # end-to-end checks against samples/"
 	@echo "make audiveris           # fetch the second recognition engine"
 	@echo "make guide               # rebuild both user guides from docs/src/"
+	@echo "make share               # redraw the link-preview cards (og:image)"
 
 ## Assemble a real, double-clickable .app around the SwiftPM executable.
 ## Includes the self-contained Python runtime when it has been built.
@@ -130,12 +136,24 @@ run:
 icon: Resources/AppIcon.icns
 
 Resources/AppIcon.icns: Tools/make_icon.py
-	@PY="build/runtime-arm64/python/bin/python3"; \
-	if [ ! -x "$$PY" ]; then PY="$(VENV)"; fi; \
+	@$(PY_PILLOW); \
 	if [ -x "$$PY" ]; then \
 		"$$PY" Tools/make_icon.py Resources/AppIcon.icns; \
 	else \
 		echo "skipping icon: no Python environment yet"; \
+	fi
+
+## Redraw the 1200x630 cards that Facebook, Threads, LINE, Discord and X show
+## when someone pastes a link to the guide. The PNGs are committed, so the
+## much more common `make guide` never needs Pillow.
+share: docs/share.png
+
+docs/share.png docs/share-en.png: Tools/make_share_image.py Tools/make_icon.py
+	@$(PY_PILLOW); \
+	if [ -x "$$PY" ]; then \
+		"$$PY" Tools/make_share_image.py; \
+	else \
+		echo "skipping share images: no Python environment yet"; \
 	fi
 
 install: app

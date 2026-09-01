@@ -9,7 +9,8 @@ inlined, so a copy on a disk image works with no network and nothing to resolve.
 
 Two things happen here that the sources cannot do themselves:
 
-* The icon is embedded as a data: URI.
+* The icon is embedded as a data: URI, and used as the favicon.
+* Open Graph tags are generated, pointing at the social cards in docs/.
 * `var(--token)` is folded out of SVG presentation attributes into `style="..."`.
   CSS custom properties are not valid in presentation attributes — browsers
   ignore them and the illustrations render in default black — so the sources
@@ -26,6 +27,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCE_DIR = os.path.join(ROOT, "docs", "src")
 ICON = os.path.join(ROOT, "docs", "icon", "AppIcon-256.png")
+SITE = "https://wubj.github.io/Pdf2Score/"
 STYLESHEET = os.path.join(SOURCE_DIR, "guide.css")
 
 FONTS = (
@@ -42,6 +44,10 @@ GUIDES = [
         "lang": "zh-Hant",
         "title": "Pdf2Score 使用指南",
         "description": "Pdf2Score 的安裝與使用說明：把 PDF 樂譜轉成 MuseScore 打得開的檔案。",
+        "url": SITE,
+        "locale": "zh_TW",
+        "share": "share.png",
+        "share_alt": "Pdf2Score：把 PDF 樂譜轉成 MuseScore 打得開的檔案",
     },
     {
         "source": "guide.en.html",
@@ -49,6 +55,10 @@ GUIDES = [
         "lang": "en",
         "title": "Pdf2Score User Guide",
         "description": "How to install and use Pdf2Score: turn PDF sheet music into files MuseScore can open.",
+        "url": SITE + "en/",
+        "locale": "en_US",
+        "share": "share-en.png",
+        "share_alt": "Pdf2Score: turn PDF sheet music into files MuseScore can open",
     },
 ]
 
@@ -93,12 +103,46 @@ def build(guide: dict[str, str], css: str, icon: str) -> bool:
               file=sys.stderr)
         return False
 
+    # og:image is fetched by Facebook, Threads, LINE and X from the live site,
+    # so a missing file means a blank preview card that nothing here would
+    # otherwise catch — the page itself renders fine without it.
+    if not os.path.exists(os.path.join(ROOT, "docs", guide["share"])):
+        print(f"error: {guide['share']} is missing — run Tools/make_share_image.py",
+              file=sys.stderr)
+        return False
+
+    share = SITE + guide["share"]
+    social = "".join(
+        f'<meta {kind}="{name}" content="{value}">\n'
+        for kind, name, value in (
+            ("property", "og:type", "website"),
+            ("property", "og:site_name", "Pdf2Score"),
+            ("property", "og:locale", guide["locale"]),
+            ("property", "og:title", guide["title"]),
+            ("property", "og:description", guide["description"]),
+            ("property", "og:url", guide["url"]),
+            ("property", "og:image", share),
+            ("property", "og:image:width", "1200"),
+            ("property", "og:image:height", "630"),
+            ("property", "og:image:alt", guide["share_alt"]),
+            ("name", "twitter:card", "summary_large_image"),
+            ("name", "twitter:title", guide["title"]),
+            ("name", "twitter:description", guide["description"]),
+            ("name", "twitter:image", share),
+        )
+    )
+
     page = (
         f'<!doctype html>\n<html lang="{guide["lang"]}">\n<head>\n'
         '<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
         f'<meta name="description" content="{guide["description"]}">\n'
         f'<title>{guide["title"]}</title>\n'
+        f'<link rel="canonical" href="{guide["url"]}">\n'
+        # Inlined rather than linked: the copy that ships on the disk image has
+        # no docs/icon/ next to it.
+        f'<link rel="icon" type="image/png" href="data:image/png;base64,{icon}">\n'
+        + social +
         '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
         f'<link rel="stylesheet" href="{FONTS}">\n'
