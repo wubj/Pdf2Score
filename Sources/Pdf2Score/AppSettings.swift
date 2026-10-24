@@ -58,6 +58,14 @@ final class AppSettings {
         didSet { defaults.set(revealInFinderWhenDone, forKey: Keys.revealInFinder) }
     }
 
+    /// Start converting as soon as files are added, instead of waiting for the
+    /// Convert button. On by default: a queued file and a file waiting its turn
+    /// looked alike, so a forgotten button press was indistinguishable from
+    /// work in progress, and people sat watching a queue that was not moving.
+    var autoStart: Bool {
+        didSet { defaults.set(autoStart, forKey: Keys.autoStart) }
+    }
+
     private let defaults = UserDefaults.standard
 
     private enum Keys {
@@ -69,6 +77,7 @@ final class AppSettings {
         static let dpi = "dpi"
         static let coremlEncoder = "coremlEncoder"
         static let revealInFinder = "revealInFinder"
+        static let autoStart = "autoStart"
     }
 
     init() {
@@ -80,6 +89,7 @@ final class AppSettings {
             Keys.dpi: 300,
             Keys.coremlEncoder: false,
             Keys.revealInFinder: false,
+            Keys.autoStart: true,
         ])
         engine = Engine(rawValue: defaults.string(forKey: Keys.engine) ?? "") ?? .homr
         outputLocation = OutputLocation(
@@ -92,6 +102,7 @@ final class AppSettings {
         dpi = defaults.integer(forKey: Keys.dpi)
         coremlEncoder = defaults.bool(forKey: Keys.coremlEncoder)
         revealInFinderWhenDone = defaults.bool(forKey: Keys.revealInFinder)
+        autoStart = defaults.bool(forKey: Keys.autoStart)
     }
 
     /// Which of the worker's message tables to use. The app itself ships only

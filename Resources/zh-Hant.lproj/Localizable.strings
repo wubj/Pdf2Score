@@ -94,6 +94,13 @@
 "The environment is ready." = "環境準備完成。";
 "(output interrupted: %@)" = "（讀取輸出中斷：%@）";
 
+/* 轉換 */
+"Not started yet" = "尚未開始";
+"%d files ready — press Convert" = "%d 個檔案待轉換 — 請按「開始轉換」";
+"Converting" = "轉換";
+"Start converting as soon as files are added" = "加入檔案後自動開始轉換";
+"Without this, files wait in the queue until you press Convert. Leave it on unless you want to choose the engine for each batch before it starts." = "關閉時，檔案會留在清單中等你按「開始轉換」。除非你想在每批開始前先選辨識引擎，否則建議保持開啟。";
+
 /* Worker */
 "The Python environment is not installed yet." = "Python 執行環境尚未安裝完成。";
 "Could not find worker.py — the app may be incomplete." = "找不到 worker.py，App 內容可能不完整。";

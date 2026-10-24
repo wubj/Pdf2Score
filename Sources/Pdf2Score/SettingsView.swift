@@ -31,6 +31,13 @@ struct SettingsView: View {
                 Toggle("Reveal in Finder when finished", isOn: $settings.revealInFinderWhenDone)
             }
 
+            Section("Converting") {
+                Toggle("Start converting as soon as files are added", isOn: $settings.autoStart)
+                Text("Without this, files wait in the queue until you press Convert. Leave it on unless you want to choose the engine for each batch before it starts.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             Section("Recognition") {
                 Toggle("Merge multi-page PDFs into one file", isOn: $settings.mergePages)
                 Text("Pages that disagree on their part layout are written out separately instead. Audiveris handles multi-page scores itself and ignores this setting.")

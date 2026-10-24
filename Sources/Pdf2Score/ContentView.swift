@@ -88,7 +88,7 @@ private struct JobList: View {
         @Bindable var model = model
         List(selection: $model.selectedJobID) {
             ForEach(model.jobs) { job in
-                JobRow(job: job)
+                JobRow(job: job, batchRunning: model.isRunning)
                     .tag(job.id)
                     .contextMenu {
                         Button("Show in Finder") { model.reveal(job) }
@@ -110,10 +110,11 @@ private struct JobList: View {
 
 private struct JobRow: View {
     @Bindable var job: Job
+    let batchRunning: Bool
 
     var body: some View {
         HStack(spacing: 12) {
-            StatusIcon(state: job.state)
+            StatusIcon(state: job.state, batchRunning: batchRunning)
                 .frame(width: 18)
 
             VStack(alignment: .leading, spacing: 3) {
@@ -121,7 +122,7 @@ private struct JobRow: View {
                     .lineLimit(1)
                     .truncationMode(.middle)
                 HStack(spacing: 6) {
-                    Text(job.statusText)
+                    Text(job.statusText(batchRunning: batchRunning))
                     if let message = job.message {
                         Text(verbatim: "·").foregroundStyle(.tertiary)
                         Text(message).lineLimit(1)
@@ -154,11 +155,18 @@ private struct JobRow: View {
 
 private struct StatusIcon: View {
     let state: Job.State
+    let batchRunning: Bool
 
     var body: some View {
         switch state {
         case .queued:
-            Image(systemName: "clock").foregroundStyle(.secondary)
+            // A clock reads as "it is working on it". That is true only when a
+            // batch is actually running; otherwise this file needs the user.
+            if batchRunning {
+                Image(systemName: "clock").foregroundStyle(.secondary)
+            } else {
+                Image(systemName: "circle.dashed").foregroundStyle(.orange)
+            }
         case .preparing:
             Image(systemName: "gearshape.2").foregroundStyle(Color.accentColor)
         case .running:
@@ -270,6 +278,8 @@ private struct Toolbar: ToolbarContent {
                 } label: {
                     Label("Convert", systemImage: "play.fill")
                 }
+                .buttonStyle(.borderedProminent)
+                .keyboardShortcut("r", modifiers: .command)
                 .disabled(model.pendingJobs.isEmpty || model.needsBootstrap)
             }
 

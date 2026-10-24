@@ -40,6 +40,12 @@ final class AppModel {
         if jobs.isEmpty {
             return String(localized: isWarmingUp ? "Preparing the recognition engine…" : "No files yet")
         }
+        // Nothing running but files waiting: say what to do, rather than
+        // reporting a count that reads like a progress report.
+        if !isRunning, !pendingJobs.isEmpty {
+            return String(format: String(localized: "%d files ready — press Convert"),
+                          pendingJobs.count)
+        }
         var parts = [
             String(format: String(localized: "%d files"), jobs.count),
             String(format: String(localized: "%d done"), done),
@@ -75,7 +81,28 @@ final class AppModel {
         }
         jobs.append(contentsOf: added.map(Job.init(url:)))
         if selectedJobID == nil { selectedJobID = jobs.first?.id }
+        if !added.isEmpty { scheduleAutoStart() }
     }
+
+    /// Begins the conversion shortly after files stop arriving.
+    ///
+    /// The delay is load-bearing. ContentView.handleDrop calls `add(urls:)`
+    /// once per dropped item, asynchronously, so a five-file drag arrives as
+    /// five separate calls. Starting on the first one would convert one file
+    /// and leave the other four sitting in the queue — the very situation this
+    /// feature exists to prevent — so each new arrival restarts the timer and
+    /// the batch begins once the drop has settled.
+    private func scheduleAutoStart() {
+        guard settings.autoStart, !needsBootstrap, !isRunning else { return }
+        autoStartTask?.cancel()
+        autoStartTask = Task {
+            try? await Task.sleep(for: .milliseconds(400))
+            guard !Task.isCancelled else { return }
+            start()
+        }
+    }
+
+    private var autoStartTask: Task<Void, Never>?
 
     func remove(_ job: Job) {
         jobs.removeAll { $0.id == job.id }
@@ -134,6 +161,7 @@ final class AppModel {
         guard !isRunning, !batch.isEmpty else { return }
 
         isRunning = true
+        stopRequested = false
         // The worker's startup output carries no job id, so it belongs to
         // whichever file is first in line until the worker says otherwise.
         // Without this the log pane stays empty through the whole cold start
@@ -146,7 +174,6 @@ final class AppModel {
         let options = settings.workerOptions(engine: engine)
 
         Task {
-            defer { isRunning = false }
             do {
                 // The stream is consumed here on the main actor, but the pipes
                 // behind it are drained on background queues — see WorkerRunner.
@@ -168,12 +195,26 @@ final class AppModel {
             if settings.revealInFinderWhenDone {
                 revealAllOutputs()
             }
+            isRunning = false
+
+            // Files added while this batch was running were never part of it:
+            // `run` takes a snapshot of the queue and refuses to start a second
+            // worker. Without this they would sit at "not started" after the
+            // batch ends, waiting for a button press nobody expects to need.
+            // Stop is an instruction to stop, so it does not chain.
+            if settings.autoStart, !stopRequested, !pendingJobs.isEmpty {
+                start()
+            }
         }
     }
 
     func cancel() {
+        stopRequested = true
         runner.cancel()
     }
+
+    /// Set by Stop, so the queue is not immediately restarted by auto-start.
+    private var stopRequested = false
 
     private func job(_ id: String) -> Job? {
         jobs.first { $0.id == id }

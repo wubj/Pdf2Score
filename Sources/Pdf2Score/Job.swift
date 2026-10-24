@@ -41,10 +41,14 @@ final class Job: Identifiable {
         return Double(completedPages) / Double(pageCount)
     }
 
-    var statusText: String {
+    /// `batchRunning` decides what `.queued` means to the reader. While a batch
+    /// is under way it means "waiting its turn"; with nothing running it means
+    /// "nobody has pressed Convert". Saying "Waiting" for both is what made a
+    /// forgotten button press look like work in progress.
+    func statusText(batchRunning: Bool) -> String {
         switch state {
         case .queued:
-            return String(localized: "Waiting")
+            return String(localized: batchRunning ? "Waiting" : "Not started yet")
         case .preparing:
             return String(localized: "Starting the recognition engine… (the first run after installing can take several minutes)")
         case .running:

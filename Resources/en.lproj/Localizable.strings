@@ -95,6 +95,13 @@
 "The environment is ready." = "The environment is ready.";
 "(output interrupted: %@)" = "(output interrupted: %@)";
 
+/* Converting */
+"Not started yet" = "Not started yet";
+"%d files ready — press Convert" = "%d files ready — press Convert";
+"Converting" = "Converting";
+"Start converting as soon as files are added" = "Start converting as soon as files are added";
+"Without this, files wait in the queue until you press Convert. Leave it on unless you want to choose the engine for each batch before it starts." = "Without this, files wait in the queue until you press Convert. Leave it on unless you want to choose the engine for each batch before it starts.";
+
 /* Worker */
 "The Python environment is not installed yet." = "The Python environment is not installed yet.";
 "Could not find worker.py — the app may be incomplete." = "Could not find worker.py — the app may be incomplete.";
